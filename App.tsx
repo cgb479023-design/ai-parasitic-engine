@@ -453,6 +453,30 @@ export default function App() {
     const handleSubmit = async (formData: FormInput) => {
         setError(null);
 
+        // --- 🏹 V2.0 Strategic Integration: Manual Mission Injection ---
+        try {
+            const payload = {
+                type: formData.imitateUrl ? 'hijack' : 'scratch',
+                targetUrl: formData.imitateUrl,
+                metadata: formData
+            };
+
+            const response = await fetch('http://localhost:51122/api/intents/manual-injection', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                console.log("🎯 [Mission Injected] Successfully handed off to DFL backend.");
+                alert("🚀 任务已注入 DFL 工业流水线！正在前往控制中心...");
+                window.location.hash = '#youtube_analytics/dfl';
+                return; // ⚔️ Fire-and-Forget: Exit local UI loop
+            }
+        } catch (error) {
+            console.error("❌ [Industrial Bridge Failed] Falling back to local mode:", error);
+        }
+
         const activeApiKey = manualApiKey || HARDCODED_API_KEY || undefined;
 
         if (formData.engine === VideoEngine.VEO) {

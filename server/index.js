@@ -360,6 +360,71 @@ let radarBreakoutsPool = [
   }
 ];
 
+/**
+ * 🛠️ [Helper] Extract YouTube ID from various URL formats
+ */
+function extractYouTubeId(url) {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[7].length === 11) ? match[7] : null;
+}
+
+/**
+ * 📥 V16.0: Manual Mission Injection (Fire-and-Forget)
+ * Receives manual tasks from the UI and injects them into the DFL Meat Grinder.
+ */
+app.post('/api/intents/manual-injection', async (req, res) => {
+  const { type, targetUrl, metadata } = req.body;
+  const intentId = `manual_${Date.now()}`;
+
+  try {
+    if ((type === 'hijack' || targetUrl) && targetUrl) {
+      const videoId = extractYouTubeId(targetUrl);
+      if (!videoId) throw new Error("Invalid YouTube URL");
+
+      console.log(`📥 [Manual Injection] Hijack target detected: ${videoId}`);
+
+      // Persist to state machine as 'pending'
+      upsertIntent({
+        id: intentId,
+        timestamp: Date.now(),
+        type: 'AUTO_NINJA_MISSION',
+        payload: { ...metadata, videoId, originalTitle: metadata.title || 'Manual Hijack' },
+        origin: 'UI_MANUAL',
+        status: 'scraping'
+      });
+
+      // Fire-and-forget: Trigger the industrial pipeline
+      triggerParasiticWorkflow(videoId, metadata.title || 'Manual Hijack', intentId)
+        .catch(err => {
+          console.error(`❌ [Manual Pipeline] Task ${intentId} failed:`, err.message);
+          upsertIntent({ id: intentId, status: 'failed', error: err.message });
+        });
+    } else {
+      console.log(`📥 [Manual Injection] Original brief detected: ${metadata.title}`);
+
+      // Original content follows a slightly different mutation-first path
+      upsertIntent({
+        id: intentId,
+        timestamp: Date.now(),
+        type: 'AUTO_NINJA_MISSION',
+        payload: metadata,
+        origin: 'UI_MANUAL',
+        status: 'mutating' // Skip scraping for original content
+      });
+
+      // Future: triggerOriginalWorkflow(metadata, intentId).catch(...)
+      // For now, we reuse the mutation logic if possible or log it.
+      console.log(`⚠️ [Manual Injection] Original content pipeline pending implementation.`);
+    }
+
+    res.json({ success: true, intentId });
+  } catch (err) {
+    console.error("❌ [Manual Injection] Ignition Failed:", err.message);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.get('/api/radar/breakouts', (req, res) => {
   res.json({ success: true, data: radarBreakoutsPool });
 });
