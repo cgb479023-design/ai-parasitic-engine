@@ -1,0 +1,8 @@
+{
+  "name": "test-automation",
+  "description": "Executes automated tests and generates test coverage reports.",
+  "parameters": {},
+  "activation": {
+    "keywords": ["test", "coverage", "vitest", "automation", "测试", "覆盖率"]
+  }
+}

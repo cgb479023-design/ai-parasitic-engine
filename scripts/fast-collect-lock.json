@@ -1,0 +1,34 @@
+{
+  "fastCollectLock": {
+    "version": "1.0.0",
+    "lockedAt": "2026-01-26T12:00:00Z",
+    "status": "stable",
+    "description": "Fast Collect功能稳定版本锁定，当前版本完全正常工作",
+    "lockType": "manual",
+    "lockedBy": "System",
+    "lockedFiles": [
+      "src/components/YouTubeAnalytics.tsx",
+      "components/YouTubeAnalytics/hooks/useDataCollectionState.tsx",
+      "components/YouTubeAnalytics/BatchCollectionPanel.tsx",
+      "src/utils/JsonUtils.ts"
+    ],
+    "verifiedFeatures": [
+      "Fast Collect功能完整正常工作",
+      "JSON解析问题已修复",
+      "所有类别数据收集正常",
+      "状态管理稳定",
+      "错误处理机制完善"
+    ],
+    "testResults": {
+      "syntaxCheck": "passed",
+      "quickVerify": "passed",
+      "manualVerification": "passed",
+      "fastCollectFunctionality": "passed",
+      "jsonParsing": "passed"
+    },
+    "backupInfo": {
+      "backupPath": "backups\\fast-collect-v1769369047557",
+      "backupTime": "2026-01-25T19:24:07.886Z"
+    }
+  }
+}

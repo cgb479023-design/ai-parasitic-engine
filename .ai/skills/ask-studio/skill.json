@@ -1,0 +1,11 @@
+{
+  "name": "ask-studio",
+  "tags": [
+    "ask-studio",
+    "prompt",
+    "planning"
+  ],
+  "description": "ask-studio技能包",
+  "version": "1.0.0",
+  "entryPoint": "SKILL.md"
+}

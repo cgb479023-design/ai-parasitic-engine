@@ -1,0 +1,59 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Specify the Node.js version you use
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Type Check
+        run: npm run type-check
+
+      - name: Run Lint
+        run: npm run lint
+
+      - name: Run Unit Tests and Coverage
+        run: npm run test:coverage
+
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v1
+        if: always() # Always run this step even if tests fail
+        with:
+          name: Vitest Results # Name of the report
+          path: junit.xml # Path to JUnit XML file
+          reporter: jest-junit # Specify the reporter type if needed
+          fail-on-error: true # Ensure the report action fails if there are issues
+
+      - name: Run Golden Function Verification
+        run: npm run verify:golden full
+
+      - name: Run End-to-End Tests
+        run: npm run verify:e2e all
+
+      - name: Run Performance Smoke Tests
+        run: npm run test:perf:smoke
+
+      - name: Run Frontend Performance Tests
+        run: npm run test:perf:frontend

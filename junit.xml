@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="37" failures="1" errors="0" time="16.897681">
+    <testsuite name="tests/security.test.ts" timestamp="2026-02-18T17:44:48.812Z" hostname="LAPTOP-298D2OHJ" tests="11" failures="1" errors="0" skipped="0" time="0.0590557">
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should detect insecure React componentWillMount lifecycle method" time="0.0154795">
+            <system-out>
+
+--- Debugging expectIssue for insecureReactLifecycle at line 3 in src/components/VulnerableComponent.tsx ---
+Raw results array passed to expectIssue: [
+  {
+    &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  }
+]
+Normalized filePath expected in test: src\components\VulnerableComponent.tsx
+  Comparing Result File: src\components\VulnerableComponent.tsx with Expected File: src\components\VulnerableComponent.tsx
+Filtered fileResults: [
+  {
+    &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  }
+]
+  Issue ID: src/components/VulnerableComponent.tsx_insecureReactLifecycle_3, Rule from ID: insecureReactLifecycle, Is Rule Match: true
+  Issue Line: 3, Expected Line: 3, Is Line Match: true
+Found issue: {
+  &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_insecureReactLifecycle_3&quot;,
+  &quot;severity&quot;: &quot;medium&quot;,
+  &quot;category&quot;: &quot;code-quality&quot;,
+  &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+  &quot;line&quot;: 3,
+  &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+  &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+}
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should detect insecure React componentWillReceiveProps lifecycle method" time="0.0050901">
+            <system-out>
+
+--- Debugging expectIssue for insecureReactLifecycle at line 3 in src/components/VulnerableComponent.tsx ---
+Raw results array passed to expectIssue: [
+  {
+    &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_typeSafetyAny_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using any type without specific type definition&quot;,
+    &quot;recommendation&quot;: &quot;Use proper TypeScript types or interfaces instead of any.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  }
+]
+Normalized filePath expected in test: src\components\VulnerableComponent.tsx
+  Comparing Result File: src\components\VulnerableComponent.tsx with Expected File: src\components\VulnerableComponent.tsx
+  Comparing Result File: src\components\VulnerableComponent.tsx with Expected File: src\components\VulnerableComponent.tsx
+Filtered fileResults: [
+  {
+    &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_typeSafetyAny_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using any type without specific type definition&quot;,
+    &quot;recommendation&quot;: &quot;Use proper TypeScript types or interfaces instead of any.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  }
+]
+  Issue ID: src/components/VulnerableComponent.tsx_typeSafetyAny_3, Rule from ID: typeSafetyAny, Is Rule Match: false
+  Issue Line: 3, Expected Line: 3, Is Line Match: true
+  Issue ID: src/components/VulnerableComponent.tsx_insecureReactLifecycle_3, Rule from ID: insecureReactLifecycle, Is Rule Match: true
+  Issue Line: 3, Expected Line: 3, Is Line Match: true
+Found issue: {
+  &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_insecureReactLifecycle_3&quot;,
+  &quot;severity&quot;: &quot;medium&quot;,
+  &quot;category&quot;: &quot;code-quality&quot;,
+  &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+  &quot;line&quot;: 3,
+  &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+  &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+}
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should detect insecure React componentWillUpdate lifecycle method" time="0.001801">
+            <system-out>
+
+--- Debugging expectIssue for insecureReactLifecycle at line 3 in src/components/VulnerableComponent.tsx ---
+Raw results array passed to expectIssue: [
+  {
+    &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_typeSafetyAny_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using any type without specific type definition&quot;,
+    &quot;recommendation&quot;: &quot;Use proper TypeScript types or interfaces instead of any.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  }
+]
+Normalized filePath expected in test: src\components\VulnerableComponent.tsx
+  Comparing Result File: src\components\VulnerableComponent.tsx with Expected File: src\components\VulnerableComponent.tsx
+  Comparing Result File: src\components\VulnerableComponent.tsx with Expected File: src\components\VulnerableComponent.tsx
+Filtered fileResults: [
+  {
+    &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_typeSafetyAny_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using any type without specific type definition&quot;,
+    &quot;recommendation&quot;: &quot;Use proper TypeScript types or interfaces instead of any.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  }
+]
+  Issue ID: src/components/VulnerableComponent.tsx_typeSafetyAny_3, Rule from ID: typeSafetyAny, Is Rule Match: false
+  Issue Line: 3, Expected Line: 3, Is Line Match: true
+  Issue ID: src/components/VulnerableComponent.tsx_insecureReactLifecycle_3, Rule from ID: insecureReactLifecycle, Is Rule Match: true
+  Issue Line: 3, Expected Line: 3, Is Line Match: true
+Found issue: {
+  &quot;id&quot;: &quot;src/components/VulnerableComponent.tsx_insecureReactLifecycle_3&quot;,
+  &quot;severity&quot;: &quot;medium&quot;,
+  &quot;category&quot;: &quot;code-quality&quot;,
+  &quot;file&quot;: &quot;src/components/VulnerableComponent.tsx&quot;,
+  &quot;line&quot;: 3,
+  &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+  &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+}
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should not detect insecure React lifecycle methods in functional components" time="0.0026149">
+        </testcase>
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should detect missing rel=&quot;noopener noreferrer&quot; on target=&quot;_blank&quot; links" time="0.0029183">
+            <system-out>
+
+--- Debugging expectIssue for missingRelNoopener at line 1 in src/templates/VulnerablePage.tsx ---
+Raw results array passed to expectIssue: [
+  {
+    &quot;id&quot;: &quot;src/templates/VulnerablePage.tsx_missingRelNoopener_1&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/templates/VulnerablePage.tsx&quot;,
+    &quot;line&quot;: 1,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  }
+]
+Normalized filePath expected in test: src\templates\VulnerablePage.tsx
+  Comparing Result File: src\templates\VulnerablePage.tsx with Expected File: src\templates\VulnerablePage.tsx
+Filtered fileResults: [
+  {
+    &quot;id&quot;: &quot;src/templates/VulnerablePage.tsx_missingRelNoopener_1&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/templates/VulnerablePage.tsx&quot;,
+    &quot;line&quot;: 1,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  }
+]
+  Issue ID: src/templates/VulnerablePage.tsx_missingRelNoopener_1, Rule from ID: missingRelNoopener, Is Rule Match: true
+  Issue Line: 1, Expected Line: 1, Is Line Match: true
+Found issue: {
+  &quot;id&quot;: &quot;src/templates/VulnerablePage.tsx_missingRelNoopener_1&quot;,
+  &quot;severity&quot;: &quot;medium&quot;,
+  &quot;category&quot;: &quot;xss&quot;,
+  &quot;file&quot;: &quot;src/templates/VulnerablePage.tsx&quot;,
+  &quot;line&quot;: 1,
+  &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+  &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+}
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should detect missing rel=&quot;noopener&quot; even if noreferrer is present" time="0.0014502">
+            <system-out>
+
+--- Debugging expectIssue for missingRelNoopener at line 1 in src/templates/VulnerablePage.tsx ---
+Raw results array passed to expectIssue: [
+  {
+    &quot;id&quot;: &quot;src/templates/VulnerablePage.tsx_missingRelNoopener_1&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/templates/VulnerablePage.tsx&quot;,
+    &quot;line&quot;: 1,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  }
+]
+Normalized filePath expected in test: src\templates\VulnerablePage.tsx
+  Comparing Result File: src\templates\VulnerablePage.tsx with Expected File: src\templates\VulnerablePage.tsx
+Filtered fileResults: [
+  {
+    &quot;id&quot;: &quot;src/templates/VulnerablePage.tsx_missingRelNoopener_1&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/templates/VulnerablePage.tsx&quot;,
+    &quot;line&quot;: 1,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  }
+]
+  Issue ID: src/templates/VulnerablePage.tsx_missingRelNoopener_1, Rule from ID: missingRelNoopener, Is Rule Match: true
+  Issue Line: 1, Expected Line: 1, Is Line Match: true
+Found issue: {
+  &quot;id&quot;: &quot;src/templates/VulnerablePage.tsx_missingRelNoopener_1&quot;,
+  &quot;severity&quot;: &quot;medium&quot;,
+  &quot;category&quot;: &quot;xss&quot;,
+  &quot;file&quot;: &quot;src/templates/VulnerablePage.tsx&quot;,
+  &quot;line&quot;: 1,
+  &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+  &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+}
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should not detect missing rel=&quot;noopener noreferrer&quot; if both are present" time="0.0007803">
+        </testcase>
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should not detect missing rel=&quot;noopener noreferrer&quot; on internal links or without target=&quot;_blank&quot;" time="0.0006166">
+        </testcase>
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should detect broad postMessage target using &quot;*&quot;" time="0.0137795">
+            <system-out>
+
+--- Debugging expectIssue for broadPostMessageTarget at line 1 in src/utils/VulnerableMessenger.ts ---
+Raw results array passed to expectIssue: []
+Normalized filePath expected in test: src\utils\VulnerableMessenger.ts
+Filtered fileResults: []
+
+            </system-out>
+            <failure message="expected 0 to be greater than 0" type="AssertionError">
+AssertionError: expected 0 to be greater than 0
+ ❯ expectIssue tests/security.test.ts:46:32
+ ❯ tests/security.test.ts:180:5
+            </failure>
+        </testcase>
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should not detect broad postMessage target when a specific origin is used" time="0.0008088">
+        </testcase>
+        <testcase classname="tests/security.test.ts" name="SecurityScanner &gt; should detect multiple issues in a single file" time="0.0049111">
+            <system-out>
+
+--- Debugging expectIssue for insecureReactLifecycle at line 3 in src/components/MixedVulnerabilities.tsx ---
+Raw results array passed to expectIssue: [
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_9&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 9,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_10&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 10,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_broadPostMessageTarget_11&quot;,
+    &quot;severity&quot;: &quot;high&quot;,
+    &quot;category&quot;: &quot;network&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 11,
+    &quot;message&quot;: &quot;Using \&quot;*\&quot; as targetOrigin in postMessage, allowing any window to receive the message&quot;,
+    &quot;recommendation&quot;: &quot;Specify a precise targetOrigin (e.g., window.location.origin) to prevent message interception by malicious scripts.&quot;
+  }
+]
+Normalized filePath expected in test: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+Filtered fileResults: [
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_9&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 9,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_10&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 10,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_broadPostMessageTarget_11&quot;,
+    &quot;severity&quot;: &quot;high&quot;,
+    &quot;category&quot;: &quot;network&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 11,
+    &quot;message&quot;: &quot;Using \&quot;*\&quot; as targetOrigin in postMessage, allowing any window to receive the message&quot;,
+    &quot;recommendation&quot;: &quot;Specify a precise targetOrigin (e.g., window.location.origin) to prevent message interception by malicious scripts.&quot;
+  }
+]
+  Issue ID: src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3, Rule from ID: insecureReactLifecycle, Is Rule Match: true
+  Issue Line: 3, Expected Line: 3, Is Line Match: true
+Found issue: {
+  &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3&quot;,
+  &quot;severity&quot;: &quot;medium&quot;,
+  &quot;category&quot;: &quot;code-quality&quot;,
+  &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+  &quot;line&quot;: 3,
+  &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+  &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+}
+
+--- Debugging expectIssue for missingRelNoopener at line 9 in src/components/MixedVulnerabilities.tsx ---
+Raw results array passed to expectIssue: [
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_9&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 9,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_10&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 10,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_broadPostMessageTarget_11&quot;,
+    &quot;severity&quot;: &quot;high&quot;,
+    &quot;category&quot;: &quot;network&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 11,
+    &quot;message&quot;: &quot;Using \&quot;*\&quot; as targetOrigin in postMessage, allowing any window to receive the message&quot;,
+    &quot;recommendation&quot;: &quot;Specify a precise targetOrigin (e.g., window.location.origin) to prevent message interception by malicious scripts.&quot;
+  }
+]
+Normalized filePath expected in test: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+Filtered fileResults: [
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_9&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 9,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_10&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 10,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_broadPostMessageTarget_11&quot;,
+    &quot;severity&quot;: &quot;high&quot;,
+    &quot;category&quot;: &quot;network&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 11,
+    &quot;message&quot;: &quot;Using \&quot;*\&quot; as targetOrigin in postMessage, allowing any window to receive the message&quot;,
+    &quot;recommendation&quot;: &quot;Specify a precise targetOrigin (e.g., window.location.origin) to prevent message interception by malicious scripts.&quot;
+  }
+]
+  Issue ID: src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3, Rule from ID: insecureReactLifecycle, Is Rule Match: false
+  Issue Line: 3, Expected Line: 9, Is Line Match: false
+  Issue ID: src/components/MixedVulnerabilities.tsx_missingRelNoopener_9, Rule from ID: missingRelNoopener, Is Rule Match: true
+  Issue Line: 9, Expected Line: 9, Is Line Match: true
+Found issue: {
+  &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_9&quot;,
+  &quot;severity&quot;: &quot;medium&quot;,
+  &quot;category&quot;: &quot;xss&quot;,
+  &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+  &quot;line&quot;: 9,
+  &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+  &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+}
+
+--- Debugging expectIssue for missingRelNoopener at line 10 in src/components/MixedVulnerabilities.tsx ---
+Raw results array passed to expectIssue: [
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_9&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 9,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_10&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 10,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_broadPostMessageTarget_11&quot;,
+    &quot;severity&quot;: &quot;high&quot;,
+    &quot;category&quot;: &quot;network&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 11,
+    &quot;message&quot;: &quot;Using \&quot;*\&quot; as targetOrigin in postMessage, allowing any window to receive the message&quot;,
+    &quot;recommendation&quot;: &quot;Specify a precise targetOrigin (e.g., window.location.origin) to prevent message interception by malicious scripts.&quot;
+  }
+]
+Normalized filePath expected in test: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+Filtered fileResults: [
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_9&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 9,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_10&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 10,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_broadPostMessageTarget_11&quot;,
+    &quot;severity&quot;: &quot;high&quot;,
+    &quot;category&quot;: &quot;network&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 11,
+    &quot;message&quot;: &quot;Using \&quot;*\&quot; as targetOrigin in postMessage, allowing any window to receive the message&quot;,
+    &quot;recommendation&quot;: &quot;Specify a precise targetOrigin (e.g., window.location.origin) to prevent message interception by malicious scripts.&quot;
+  }
+]
+  Issue ID: src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3, Rule from ID: insecureReactLifecycle, Is Rule Match: false
+  Issue Line: 3, Expected Line: 10, Is Line Match: false
+  Issue ID: src/components/MixedVulnerabilities.tsx_missingRelNoopener_9, Rule from ID: missingRelNoopener, Is Rule Match: true
+  Issue Line: 9, Expected Line: 10, Is Line Match: false
+  Issue ID: src/components/MixedVulnerabilities.tsx_missingRelNoopener_10, Rule from ID: missingRelNoopener, Is Rule Match: true
+  Issue Line: 10, Expected Line: 10, Is Line Match: true
+Found issue: {
+  &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_10&quot;,
+  &quot;severity&quot;: &quot;medium&quot;,
+  &quot;category&quot;: &quot;xss&quot;,
+  &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+  &quot;line&quot;: 10,
+  &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+  &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+}
+
+--- Debugging expectIssue for broadPostMessageTarget at line 11 in src/components/MixedVulnerabilities.tsx ---
+Raw results array passed to expectIssue: [
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_9&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 9,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_10&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 10,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_broadPostMessageTarget_11&quot;,
+    &quot;severity&quot;: &quot;high&quot;,
+    &quot;category&quot;: &quot;network&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 11,
+    &quot;message&quot;: &quot;Using \&quot;*\&quot; as targetOrigin in postMessage, allowing any window to receive the message&quot;,
+    &quot;recommendation&quot;: &quot;Specify a precise targetOrigin (e.g., window.location.origin) to prevent message interception by malicious scripts.&quot;
+  }
+]
+Normalized filePath expected in test: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+  Comparing Result File: src\components\MixedVulnerabilities.tsx with Expected File: src\components\MixedVulnerabilities.tsx
+Filtered fileResults: [
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;code-quality&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 3,
+    &quot;message&quot;: &quot;Using deprecated and potentially insecure React lifecycle methods&quot;,
+    &quot;recommendation&quot;: &quot;Refactor to use componentDidMount, componentDidUpdate, or getDerivedStateFromProps.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_9&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 9,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_missingRelNoopener_10&quot;,
+    &quot;severity&quot;: &quot;medium&quot;,
+    &quot;category&quot;: &quot;xss&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 10,
+    &quot;message&quot;: &quot;Missing rel=\&quot;noopener noreferrer\&quot; on external links with target=\&quot;_blank\&quot;&quot;,
+    &quot;recommendation&quot;: &quot;Add rel=\&quot;noopener noreferrer\&quot; to all &lt;a&gt; tags with target=\&quot;_blank\&quot; to prevent tabnapping attacks.&quot;
+  },
+  {
+    &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_broadPostMessageTarget_11&quot;,
+    &quot;severity&quot;: &quot;high&quot;,
+    &quot;category&quot;: &quot;network&quot;,
+    &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+    &quot;line&quot;: 11,
+    &quot;message&quot;: &quot;Using \&quot;*\&quot; as targetOrigin in postMessage, allowing any window to receive the message&quot;,
+    &quot;recommendation&quot;: &quot;Specify a precise targetOrigin (e.g., window.location.origin) to prevent message interception by malicious scripts.&quot;
+  }
+]
+  Issue ID: src/components/MixedVulnerabilities.tsx_insecureReactLifecycle_3, Rule from ID: insecureReactLifecycle, Is Rule Match: false
+  Issue Line: 3, Expected Line: 11, Is Line Match: false
+  Issue ID: src/components/MixedVulnerabilities.tsx_missingRelNoopener_9, Rule from ID: missingRelNoopener, Is Rule Match: false
+  Issue Line: 9, Expected Line: 11, Is Line Match: false
+  Issue ID: src/components/MixedVulnerabilities.tsx_missingRelNoopener_10, Rule from ID: missingRelNoopener, Is Rule Match: false
+  Issue Line: 10, Expected Line: 11, Is Line Match: false
+  Issue ID: src/components/MixedVulnerabilities.tsx_broadPostMessageTarget_11, Rule from ID: broadPostMessageTarget, Is Rule Match: true
+  Issue Line: 11, Expected Line: 11, Is Line Match: true
+Found issue: {
+  &quot;id&quot;: &quot;src/components/MixedVulnerabilities.tsx_broadPostMessageTarget_11&quot;,
+  &quot;severity&quot;: &quot;high&quot;,
+  &quot;category&quot;: &quot;network&quot;,
+  &quot;file&quot;: &quot;src/components/MixedVulnerabilities.tsx&quot;,
+  &quot;line&quot;: 11,
+  &quot;message&quot;: &quot;Using \&quot;*\&quot; as targetOrigin in postMessage, allowing any window to receive the message&quot;,
+  &quot;recommendation&quot;: &quot;Specify a precise targetOrigin (e.g., window.location.origin) to prevent message interception by malicious scripts.&quot;
+}
+
+            </system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/ErrorBoundary.test.tsx" timestamp="2026-02-18T17:44:48.835Z" hostname="LAPTOP-298D2OHJ" tests="3" failures="0" errors="0" skipped="0" time="0.2122503">
+        <testcase classname="src/components/ErrorBoundary.test.tsx" name="ErrorBoundary &gt; should render children normally when no error occurs" time="0.1140146">
+        </testcase>
+        <testcase classname="src/components/ErrorBoundary.test.tsx" name="ErrorBoundary &gt; should render fallback UI when error occurs" time="0.066181">
+        </testcase>
+        <testcase classname="src/components/ErrorBoundary.test.tsx" name="ErrorBoundary &gt; should call onError callback when error occurs" time="0.0261901">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/services/dependencyAnalysisService.simple.test.ts" timestamp="2026-02-18T17:44:48.838Z" hostname="LAPTOP-298D2OHJ" tests="4" failures="0" errors="0" skipped="0" time="16.5978391">
+        <testcase classname="src/services/dependencyAnalysisService.simple.test.ts" name="DependencyAnalysisService - 简单测试 &gt; should create an instance successfully" time="4.9372619">
+        </testcase>
+        <testcase classname="src/services/dependencyAnalysisService.simple.test.ts" name="DependencyAnalysisService - 简单测试 &gt; should generate visualization data for an empty graph" time="3.9607674">
+        </testcase>
+        <testcase classname="src/services/dependencyAnalysisService.simple.test.ts" name="DependencyAnalysisService - 简单测试 &gt; should detect no circular dependencies in an empty graph" time="3.598161">
+        </testcase>
+        <testcase classname="src/services/dependencyAnalysisService.simple.test.ts" name="DependencyAnalysisService - 简单测试 &gt; should clear cache successfully" time="4.0968469">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/utils/__tests__/JsonUtils.test.ts" timestamp="2026-02-18T17:44:48.841Z" hostname="LAPTOP-298D2OHJ" tests="19" failures="0" errors="0" skipped="0" time="0.0285359">
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should return the input if it is already an object" time="0.0065411">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should return fallback if input is not a string" time="0.0007328">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should return empty string fallback if input is empty string" time="0.0005951">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should parse valid JSON string" time="0.002159">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should parse JSON with code blocks" time="0.0012003">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should return fallback for JSON with backticks" time="0.0007917">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should handle BOM character" time="0.0008165">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should parse JSON with trailing commas" time="0.0007824">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should parse JSON with single quotes in properties" time="0.0013377">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should return fallback for invalid JSON" time="0.0008773">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should handle control characters" time="0.0009038">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should return fallback for incomplete JSON (missing closing braces)" time="0.0012973">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; safeJsonParse &gt; should return fallback for incomplete JSON (missing closing brackets for arrays)" time="0.0006222">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; isValidJson &gt; should return true for valid JSON" time="0.0008399">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; isValidJson &gt; should return false for invalid JSON" time="0.0003948">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; isValidJson &gt; should return false for non-string input" time="0.0006323">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; isValidJson &gt; should return false for valid JSON with code blocks" time="0.0006341">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; isValidJson &gt; should return false for JSON with trailing commas" time="0.0004366">
+        </testcase>
+        <testcase classname="src/utils/__tests__/JsonUtils.test.ts" name="JsonUtils &gt; isValidJson &gt; should return false for JSON with single quotes in properties" time="0.0005598">
+        </testcase>
+    </testsuite>
+</testsuites>

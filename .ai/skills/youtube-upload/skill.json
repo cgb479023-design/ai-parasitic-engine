@@ -1,0 +1,7 @@
+{
+  "name": "youtube-upload",
+  "tags": ["youtube", "upload", "video"],
+  "description": "YouTube上传技能包，支持视频上传和发布",
+  "version": "1.0.0",
+  "entryPoint": "SKILL.md"
+}

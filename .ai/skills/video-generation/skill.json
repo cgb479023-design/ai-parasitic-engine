@@ -1,0 +1,7 @@
+{
+  "name": "video-generation",
+  "tags": ["video", "generation", "ai"],
+  "description": "视频生成技能包，支持多种视频生成模型",
+  "version": "1.0.0",
+  "entryPoint": "SKILL.md"
+}

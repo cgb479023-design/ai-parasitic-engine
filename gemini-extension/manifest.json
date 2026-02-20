@@ -1,0 +1,145 @@
+{
+    "manifest_version": 3,
+    "name": "GeminiGen Auto-Pilot (Native)",
+    "version": "4.6.9",
+    "description": "Fully modular automation for GeminiGen, Google Vids, Google Flow, YouTube uploading, analytics, LMArena, auto-comments, X, TikTok, and NotebookLM.",
+    "externally_connectable": {
+        "matches": [
+            "http://localhost:*/*",
+            "http://127.0.0.1:*/*"
+        ]
+    },
+    "permissions": [
+        "activeTab",
+        "storage",
+        "unlimitedStorage",
+        "tabs",
+        "downloads",
+        "scripting",
+        "alarms"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://localhost:*/*",
+                "http://127.0.0.1:*/*"
+            ],
+            "js": [
+                "core/constants.js",
+                "core/keepAlive.js",
+                "core/reactBridge.js"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
+                "*://geminigen.ai/*",
+                "*://www.geminigen.ai/*",
+                "*://lmarena.ai/*",
+                "*://www.lmarena.ai/*",
+                "*://labs.google/*",
+                "*://docs.google.com/videos/*",
+                "*://studio.youtube.com/*",
+                "*://www.youtube.com/*"
+            ],
+            "js": [
+                "core/constants.js",
+                "core/keepAlive.js",
+                "core/reactBridge.js",
+                "core/YouTubeDomCapability.js",
+                "core/humanSimulator.js",
+                "core/safety.js",
+                "utils/delay.js",
+                "utils/logger.js",
+                "core/domHelpers.js",
+                "core/eventDispatcher.js",
+                "platforms/platformAdapter.js",
+                "platforms/askStudio/jsonExtractor.js",
+                "platforms/askStudio/responseParser.js",
+                "platforms/youtube/scheduler.js",
+                "platforms/youtube/uploaderUtils.js",
+                "platforms/youtube/studioAgent.js",
+                "platforms/youtube/commentAutomation.js",
+                "platforms/youtube/scheduledCommentMonitor.js",
+                "platforms/youtube/transcriptScraper.js",
+                "platforms/youtube/studioUploader.js",
+                "platforms/googleVids/promptSanitizer.js",
+                "platforms/googleVids/adapter.js",
+                "platforms/googleVids/workflow.js",
+                "platforms/googleFlow/adapter.js",
+                "platforms/googleFlow/autoPilot.js",
+                "platforms/geminiGen/autoPilot.js",
+                "platforms/geminiGen/adapter.js",
+                "platforms/lmArena/autoPilot.js",
+                "platforms/autoPivot.js",
+                "content.js",
+                "youtube-analytics.js"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
+                "*://notebooklm.google.com/*"
+            ],
+            "js": [
+                "core/constants.js",
+                "notebooklm.js"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
+                "*://x.com/*",
+                "*://twitter.com/*"
+            ],
+            "js": [
+                "core/constants.js",
+                "platforms/x/xTrendsScraper.js",
+                "platforms/x/xAutoPilot.js",
+                "platforms/x/xAnalyticsScraper.js"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
+                "*://www.tiktok.com/*",
+                "*://tiktok.com/*",
+                "*://*.tiktok.com/*"
+            ],
+            "js": [
+                "core/constants.js",
+                "core/keepAlive.js",
+                "core/reactBridge.js",
+                "core/humanSimulator.js",
+                "core/safety.js",
+                "utils/delay.js",
+                "utils/logger.js",
+                "core/domHelpers.js",
+                "core/eventDispatcher.js",
+                "platforms/platformAdapter.js",
+                "platforms/tiktok/tiktokAutoPilot.js",
+                "platforms/tiktok/tiktokAnalyticsScraper.js",
+                "content.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "core/suppress.js"
+            ],
+            "matches": [
+                "*://studio.youtube.com/*",
+                "*://www.youtube.com/*"
+            ]
+        }
+    ]
+}

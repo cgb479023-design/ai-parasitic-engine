@@ -1,0 +1,155 @@
+                        const reachedVisibility = await navigateToVisibility();
+                        if (reachedVisibility) {
+                            // --- 7. 可见性与调度 (Visibility & Scheduling) ---
+                            console.log("👀 Visibility Tab Reached. Mode:", (data.scheduleDate && data.scheduleTime) ? "SCHEDULE" : "PUBLIC");
+
+                            // 标记是否成功设置了可见性，如果失败则不进行最后一步
+                            let visibilitySetSuccess = false;
+
+                            if (data.scheduleDate && data.scheduleTime) {
+                                // === SCHEDULE MODE (定时发布) ===
+                                try {
+                                    console.log("🕒 Attempting to select Schedule mode...");
+                                    
+                                    // 策略 1: 通过 ID 查找 (最稳健)
+                                    let scheduleRadio = document.querySelector('#schedule-radio-button');
+                                    
+                                    // 策略 2: 通过 name 属性查找 (之前的代码)
+                                    if (!scheduleRadio) {
+                                        scheduleRadio = document.querySelector('tp-yt-paper-radio-button[name="SCHEDULE"]');
+                                    }
+
+                                    // 策略 3: 通过文本内容暴力查找 (终极兜底)
+                                    if (!scheduleRadio) {
+                                        console.log("⚠️ Standard selectors failed, trying text search for 'Schedule'...");
+                                        const allRadios = Array.from(document.querySelectorAll('tp-yt-paper-radio-button'));
+                                        scheduleRadio = allRadios.find(el => el.textContent.trim() === 'Schedule');
+                                    }
+
+                                    if (scheduleRadio) {
+                                        // 必须模拟点击事件，有时单纯的 .click() 不会被 Polymer 框架捕获
+                                        scheduleRadio.click();
+                                        console.log("✅ Clicked Schedule radio button");
+                                        visibilitySetSuccess = true;
+                                        
+                                        // 等待日期选择器展开
+                                        await new Promise(r => setTimeout(r, 1000));
+
+                                        // Use pre-formatted strings from React
+                                        const dateStr = data.scheduleDate;
+                                        const timeStr = data.scheduleTime;
+
+                                        // 查找输入框
+                                        const dateInput = document.querySelector('#datepicker-trigger input') || 
+                                                        document.querySelector('ytcp-date-picker input') ||
+                                                        document.querySelector('ytcp-datetime-picker .date-input input');
+                                        
+                                        const timeInput = document.querySelector('#time-of-day-trigger input') || 
+                                                        document.querySelector('ytcp-time-picker input') ||
+                                                        document.querySelector('ytcp-datetime-picker .time-input input');
+
+                                        if (dateInput && timeInput) {
+                                            console.log(`📅 Setting Schedule: ${dateStr} ${timeStr}`);
+                                            
+                                            // 设置日期
+                                            dateInput.click();
+                                            dateInput.focus();
+                                            dateInput.value = '';
+                                            document.execCommand('insertText', false, dateStr);
+                                            dateInput.dispatchEvent(new Event('input', { bubbles: true }));
+                                            dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+                                            dateInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true }));
+                                            await new Promise(r => setTimeout(r, 500));
+                                            document.body.click(); // 关闭弹出的日历
+
+                                            // 设置时间
+                                            timeInput.click();
+                                            timeInput.focus();
+                                            timeInput.value = '';
+                                            document.execCommand('insertText', false, timeStr);
+                                            timeInput.dispatchEvent(new Event('input', { bubbles: true }));
+                                            timeInput.dispatchEvent(new Event('change', { bubbles: true }));
+                                            timeInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true }));
+                                            await new Promise(r => setTimeout(r, 500));
+                                            document.body.click(); // 关闭弹出的时间列表
+                                        } else {
+                                            console.warn("⚠️ Inputs for date/time not found, but 'Schedule' was selected. Video will be scheduled for default time.");
+                                        }
+
+                                    } else {
+                                        throw new Error("Critical: Schedule radio button could NOT be found by any method.");
+                                    }
+
+                                } catch (e) {
+                                    console.error("❌ Scheduling failed:", e);
+                                    // 尝试回退到私有，避免报错
+                                    console.log("⚠️ Fallback: Attempting to set to PRIVATE due to error.");
+                                    const privateRadio = document.querySelector('tp-yt-paper-radio-button[name="PRIVATE"]');
+                                    if (privateRadio) {
+                                        privateRadio.click();
+                                        visibilitySetSuccess = true;
+                                    }
+                                }
+
+                            } else {
+                                // === PUBLIC / IMMEDIATE MODE (立即发布) ===
+                                try {
+                                    let publicRadio = document.querySelector('tp-yt-paper-radio-button[name="PUBLIC"]');
+                                    if (!publicRadio) {
+                                        // 策略 2: 文本查找
+                                        const allRadios = Array.from(document.querySelectorAll('tp-yt-paper-radio-button'));
+                                        publicRadio = allRadios.find(el => el.textContent.trim().includes('Public'));
+                                    }
+                                    
+                                    if (publicRadio) {
+                                        publicRadio.click();
+                                        console.log("✅ Selected 'Public' visibility");
+                                        visibilitySetSuccess = true;
+                                    } else {
+                                        console.error("❌ Public radio button not found");
+                                    }
+                                } catch (e) { console.warn("Visibility selection failed", e); }
+                            }
+
+                            // --- 8. 完成 (Finish) ---
+                            // 只有当可见性设置成功后才点击 Done
+                            if (visibilitySetSuccess) {
+                                await new Promise(r => setTimeout(r, 2000));
+                                let doneBtn = deepQuery(document.body, '#done-button');
+                                
+                                if (!doneBtn) {
+                                    console.log("⚠️ '#done-button' not found, trying text search...");
+                                    const buttons = Array.from(document.querySelectorAll('button, ytcp-button'));
+                                    doneBtn = buttons.find(b => {
+                                        const text = (b.textContent || '').trim().toLowerCase();
+                                        return text === 'save' || text === 'publish' || text === 'schedule';
+                                    });
+                                }
+                                
+                                if (doneBtn) {
+                                    console.log("🎉 Clicking DONE/SCHEDULE!");
+                                    doneBtn.click();
+                                    
+                                    // Capture Link
+                                    await new Promise(r => setTimeout(r, 5000));
+                                    const linkEl = Array.from(document.querySelectorAll('a')).find(a => a.href && a.href.includes('youtu.be'));
+                                    if (linkEl) {
+                                        console.log("🚀 RELAYING SUCCESS:", linkEl.href);
+                                        chrome.runtime.sendMessage({ action: 'relayYouTubeUploadComplete', videoUrl: linkEl.href });
+                                    }
+                                } else {
+                                     console.error("❌ Final Done button not found!");
+                                }
+                            } else {
+                                console.error("🛑 Upload process STOPPED because Visibility could not be set.");
+                            }
+                        } else {
+                            console.error("❌ Failed to reach Visibility step.");
+                        }
+
+                        chrome.runtime.sendMessage({ action: "clearVideoData" });
+
+                    } catch (e) {
+                        console.error("❌ Process Upload Wizard Failed:", e);
+                    }
+                };

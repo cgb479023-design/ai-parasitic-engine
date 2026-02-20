@@ -1,0 +1,7 @@
+{
+  "name": "tdd-workflow",
+  "tags": ["tdd", "testing", "workflow"],
+  "description": "TDD工作流实现，包括测试生成、执行和验证",
+  "version": "1.0.0",
+  "entryPoint": "SKILL.md"
+}

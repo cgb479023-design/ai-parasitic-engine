@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Neural Engine - 智能视频创作平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+      html, body, #root {
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        background-color: #0a0a0f;
+        color: #f8fafc;
+      }
+      
+      /* Ambient Background - Apple + Midjourney inspired */
+      .ambient-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -3;
+        background: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #1a1a24 100%);
+        overflow: hidden;
+      }
+
+      /* Floating Orbs - Organic movement like Midjourney */
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.12;
+        animation: float 25s ease-in-out infinite;
+      }
+
+      .orb-1 {
+        top: -15%;
+        left: -10%;
+        width: 50vw;
+        height: 50vw;
+        background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);
+        animation-delay: 0s;
+        animation-duration: 30s;
+      }
+
+      .orb-2 {
+        bottom: -15%;
+        right: -10%;
+        width: 45vw;
+        height: 45vw;
+        background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
+        animation-delay: -10s;
+        animation-duration: 35s;
+      }
+
+      .orb-3 {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 35vw;
+        height: 35vw;
+        background: radial-gradient(circle, #ec4899 0%, transparent 70%);
+        opacity: 0.08;
+        animation-delay: -20s;
+        animation-duration: 40s;
+      }
+
+      .orb-4 {
+        top: 20%;
+        right: 15%;
+        width: 20vw;
+        height: 20vw;
+        background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+        opacity: 0.06;
+        animation-delay: -15s;
+        animation-duration: 28s;
+      }
+
+      @keyframes float {
+        0%, 100% {
+          transform: translate(0, 0) scale(1);
+        }
+        25% {
+          transform: translate(30px, -40px) scale(1.05);
+        }
+        50% {
+          transform: translate(-20px, 30px) scale(0.95);
+        }
+        75% {
+          transform: translate(-30px, -20px) scale(1.02);
+        }
+      }
+
+      /* Noise Texture - Subtle film grain for organic feel */
+      .noise-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        opacity: 0.02;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3Cfilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      }
+
+      /* Grid Pattern - Tech feel */
+      .grid-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        opacity: 0.02;
+        pointer-events: none;
+        background-image: 
+          linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px);
+        background-size: 60px 60px;
+      }
+
+      /* Custom Scrollbar - Apple-style */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(139, 92, 246, 0.3);
+        border-radius: 3px;
+        transition: background 150ms ease;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(139, 92, 246, 0.5);
+      }
+
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Selection color */
+      ::selection {
+        background: rgba(139, 92, 246, 0.3);
+        color: white;
+      }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://cdn.jsdelivr.net/npm/react@18.3.1/+esm",
+        "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/+esm",
+        "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/client/+esm",
+        "react/jsx-runtime": "https://cdn.jsdelivr.net/npm/react@18.3.1/jsx-runtime.js/+esm",
+        "@google/genai": "https://cdn.jsdelivr.net/npm/@google/genai@latest/+esm",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+        "react/": "https://aistudiocdn.com/react@^19.2.0/"
+      }
+    }
+    </script>
+    <link rel="stylesheet" href="/src/styles/modern-theme.css">
+  </head>
+  <body>
+    <div class="ambient-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="orb orb-4"></div>
+    </div>
+    <div class="noise-overlay"></div>
+    <div class="grid-overlay"></div>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

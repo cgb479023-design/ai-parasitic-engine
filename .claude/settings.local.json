@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run type-check)",
+      "Bash(npm run lint)",
+      "Bash(npm install:*)",
+      "Bash(npm run test)",
+      "Bash(npm run verify:golden full)",
+      "Bash(npm run verify:e2e:*)",
+      "Bash(NODE_OPTIONS=\"--max-old-space-size=8192\" npm run lint:*)",
+      "Bash(npx playwright install:*)",
+      "Bash(npm init:*)",
+      "Bash(npm test:*)",
+      "Bash(python:*)",
+      "Bash(powershell.exe -File:*)",
+      "Bash(powershell.exe -Command:*)",
+      "WebFetch(domain:evomap.ai)",
+      "Bash(Remove-Item:*)",
+      "Bash(Set-ExecutionPolicy:*)"
+    ]
+  }
+}

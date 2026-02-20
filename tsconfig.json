@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "ESNext",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "types": [
+      "node",
+      "vitest/globals",
+      "chrome",
+      "k6"
+    ],
+    "moduleResolution": "bundler",
+    "isolatedModules": false,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*",
+    "App.tsx",
+    "constants.ts",
+    "contexts/**/*.tsx",
+    "gemini-extension/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "scripts/**/*",
+    "backups/**/*",
+    "tests/**/*",
+    "__tests__/**/*",
+    "test-*",
+    "*.test.*"
+  ]
+}

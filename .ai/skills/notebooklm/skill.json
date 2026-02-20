@@ -1,0 +1,11 @@
+{
+  "name": "notebooklm",
+  "tags": [
+    "notebooklm",
+    "knowledge-base",
+    "integration"
+  ],
+  "description": "notebooklm技能包，用于管理和集成Google NotebookLM知识库",
+  "version": "1.0.0",
+  "entryPoint": "SKILL.md"
+}
