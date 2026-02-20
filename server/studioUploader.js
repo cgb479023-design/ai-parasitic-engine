@@ -1,6 +1,7 @@
 // h:\AI_Neural_Engine_Clean_v3.5\server\studioUploader.js
 import puppeteer from 'puppeteer';
 import fetch from 'node-fetch';
+import fs from 'fs';
 
 // --- 初始默认 DOM 选择器字典 (随时可能失效) ---
 let YOUTUBE_SELECTORS = {
@@ -60,10 +61,17 @@ export async function uploadToYouTubeWithHealing(videoFilePath, metadata, retryC
 
         console.log(`[Uploader] ✅ 视频上传成功，进入 YouTube 后台处理队列！\n`);
         await browser.close();
+
+        // 🧹 [Garbage Collection] 成片已销毁，释放磁盘空间
+        if (fs.existsSync(videoFilePath)) {
+            fs.unlinkSync(videoFilePath);
+            console.log(`🧹 [Garbage Collection] Payload purged after success: ${videoFilePath}`);
+        }
+
         return { success: true, finalUrl: page.url() };
 
     } catch (error) {
-        await browser.close();
+        if (browser) await browser.close();
         console.warn(`\n⚠️ [Uploader Error] DOM 交互失败: ${error.message}`);
 
         // 🚨 触发免疫防线：如果重试次数未达上限，向 EvoMap 呼救
@@ -76,6 +84,12 @@ export async function uploadToYouTubeWithHealing(videoFilePath, metadata, retryC
                 // 递归调用重试上传
                 return await uploadToYouTubeWithHealing(videoFilePath, metadata, retryCount + 1);
             }
+        }
+
+        // 💀 Terminal Failure: Cleanup before throwing
+        if (fs.existsSync(videoFilePath)) {
+            fs.unlinkSync(videoFilePath);
+            console.log(`🧹 [Garbage Collection] Payload purged after terminal failure: ${videoFilePath}`);
         }
 
         console.error(`❌ [Uploader Fatal] 补丁耗尽，自愈失败。请人工介入或等待社区发布新胶囊。`);

@@ -15,8 +15,8 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
  * 🏭 V2.0 Industrial Multi-Modal Pipeline
  * Realizes the Master-Slave inversion by driving everything from the backend.
  */
-export async function triggerParasiticWorkflow(videoId, originalTitle) {
-    const intentId = `int_${Date.now()}`;
+export async function triggerParasiticWorkflow(videoId, originalTitle, existingIntentId = null) {
+    const intentId = existingIntentId || `int_${Date.now()}`;
     const intent = {
         id: intentId,
         timestamp: Date.now(),

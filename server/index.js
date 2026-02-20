@@ -207,17 +207,42 @@ app.get('/auth/userinfo', async (req, res) => {
 });
 
 /**
- * 🆕 V11.0: Parasitic Viral Workflow Endpoint
+ * � V2.0 终极版：Parasitic Viral Workflow Endpoint
+ * Handles both Radar-triggered missions and manual hijacks with state awareness.
  */
 app.post('/api/trigger-parasitic-workflow', async (req, res) => {
-  const { videoId, originalTitle } = req.body;
+  const { videoId, originalTitle, intentId: manualIntentId } = req.body;
   if (!videoId) return res.status(400).json({ error: "Missing videoId" });
 
+  const intentId = manualIntentId || `int_${Date.now()}`;
+
   try {
-    const assets = await triggerParasiticWorkflow(videoId, originalTitle || 'Viral Host');
-    res.json({ success: true, assets });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.log(`🎯 [Radar Trigger] Initiating hijack mission for: ${videoId} (ID: ${intentId})`);
+
+    // 状态机：如果传入了手动 ID，确保初始状态正确（用于前端 UI 同步）
+    if (manualIntentId) {
+      upsertIntent({
+        id: intentId,
+        timestamp: Date.now(),
+        type: 'AUTO_NINJA_MISSION',
+        payload: { videoId, originalTitle },
+        origin: 'VPH_RADAR',
+        status: 'scraping'
+      });
+    }
+
+    // 启动端到端工业流水线
+    const result = await triggerParasiticWorkflow(videoId, originalTitle || 'Viral Host', intentId);
+    res.json({ success: true, result });
+  } catch (err) {
+    console.error("❌ [Radar Trigger] Mission Ignition Failed:", err.message);
+    // 💀 致命错误兜底：如果流水线在点火阶段炸了，必须把状态机改成 failed，否则前端进度条会永远卡住！
+    upsertIntent({
+      id: intentId,
+      status: 'failed',
+      error: err.message
+    });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -339,18 +364,7 @@ app.get('/api/radar/breakouts', (req, res) => {
   res.json({ success: true, data: radarBreakoutsPool });
 });
 
-app.post('/api/trigger-parasitic-workflow', async (req, res) => {
-  const { videoId, originalTitle } = req.body;
-  try {
-    console.log(`🎯 [Radar Trigger] Initiating manual hijack mission for: ${videoId}`);
-    // Start the end-to-end industrial pipeline (Scraping -> Synthesis -> Upload)
-    const result = await triggerParasiticWorkflow(videoId, originalTitle);
-    res.json(result);
-  } catch (err) {
-    console.error("❌ [Radar Trigger] Mission Ignition Failed:", err.message);
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
+// [DELETE] Shadowed route removed for V2.0 Consolidation
 
 /**
  * 健康检查
@@ -385,7 +399,19 @@ app.listen(PORT, () => {
     const interrupted = getInterruptedIntents();
     if (interrupted.length > 0) {
       console.warn(`🧟 [Auto-Recovery] Found ${interrupted.length} interrupted tasks. Re-injecting into pipeline...`);
-      // Future: Re-trigger task logic here (e.g. parasiticWorkflow.js)
+      // 遍历所有意外死亡的任务，重新塞回绞肉机流水线
+      for (const task of interrupted) {
+        console.log(`   -> Resurrecting Task [${task.id}] (Died at stage: ${task.status})`);
+
+        // 我们不需要从头跑，直接呼叫触发器并传入原始 ID
+        const payload = typeof task.payload === 'string' ? JSON.parse(task.payload) : task.payload;
+
+        triggerParasiticWorkflow(payload?.videoId, payload?.originalTitle || 'Viral Host', task.id)
+          .catch(e => {
+            console.error(`❌ [Auto-Recovery] Task ${task.id} failed again:`, e.message);
+            upsertIntent({ id: task.id, status: 'failed', error: e.message });
+          });
+      }
     }
   } catch (err) {
     console.error("❌ [Auto-Recovery] Failed to scan database:", err.message);

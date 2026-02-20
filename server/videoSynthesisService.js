@@ -99,17 +99,16 @@ function muxVideoAndAudio(videoPath, audioPath, outputPath) {
   return new Promise((resolve, reject) => {
     ffmpeg()
       .input(videoPath)
-      // 核心设定：自动循环视频轨道 (-stream_loop -1)
-      .inputOptions(['-stream_loop -1'])
+      .inputOptions(['-stream_loop -1']) // 🔄 视频轨道死循环
       .input(audioPath)
       .outputOptions([
         '-c:v libx264',   // 使用 H.264 编码以确保 YouTube 完美兼容
         '-preset fast',   // 编码速度
         '-c:a aac',       // 音频使用 AAC 编码
         '-b:a 192k',      // 高质量音频比特率
-        '-map 0:v:0',     // 映射第一个输入(视频)的视频流
-        '-map 1:a:0',     // 映射第二个输入(音频)的音频流
-        '-shortest',      // 核心设定：当最短的流（通常是音频）结束时，立刻停止编码
+        '-map 0:v:0',     // 🛡️ 强制提取输入 1 (视频文件) 的第一条视频轨
+        '-map 1:a:0',     // 🛡️ 强制提取输入 2 (音频文件) 的第一条音频轨
+        '-shortest',      // 🎧 核心设定：当最短的流（通常是音频）结束时，立刻停止编码
         '-pix_fmt yuv420p'// 确保色彩空间被所有播放器兼容
       ])
       .save(outputPath)
