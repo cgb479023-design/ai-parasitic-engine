@@ -1,16 +1,9 @@
 // h:\AI_Neural_Engine_Clean_v3.5\server\videoSynthesisService.js
-import fs from 'fs';
-import path from 'path';
-import fetch from 'node-fetch';
 import ffmpeg from 'fluent-ffmpeg';
 import { fileURLToPath } from 'url';
+import { generateElevenLabsVoiceover } from './adapters/vocalAdapter.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// --- 配置参数 (建议写入 .env 文件) ---
-const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
-// 选择一个极具煽动性的声音 ID (比如 Adam 或特定的解说员声音)
-const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || "pNInz6obpgDQGcFmaJcg";
 const TEMP_DIR = path.join(__dirname, 'temp_assets');
 
 // 确保临时工作目录存在
@@ -23,16 +16,17 @@ if (!fs.existsSync(TEMP_DIR)) {
  * @param {string} scriptText - Gemini 生成的爆款剧本
  * @param {string} rawVideoPath - geminigen.ai 生成的原始无声视频素材路径
  * @param {string} outputFilename - 输出的最终文件名
+ * @param {Function} vocalAdapter - [V11.3] 可选的声线适配器 (默认为 ElevenLabs)
  */
-export async function synthesizeShortsVideo(scriptText, rawVideoPath, outputFilename) {
+export async function synthesizeShortsVideo(scriptText, rawVideoPath, outputFilename, vocalAdapter = generateElevenLabsVoiceover) {
   console.log(`\n🎬 [Muxer Engine] 开始进行工业级音视频合成...`);
   const audioOutputPath = path.join(TEMP_DIR, `${Date.now()}_voiceover.mp3`);
   const finalVideoPath = path.join(TEMP_DIR, outputFilename);
 
   try {
-    // Step 1: 调用 ElevenLabs 提炼极具感染力的人声
-    console.log(`[Step 1] 正在唤醒 ElevenLabs 生成神经语音...`);
-    await generateVoiceover(scriptText, audioOutputPath);
+    // Step 1: 调用适配器提炼极具感染力的人声 (符合 Open-Closed 原则)
+    console.log(`[Step 1] 正在通过适配器生成神经语音...`);
+    await vocalAdapter(scriptText, audioOutputPath);
     console.log(`[Step 1] ✅ 语音轨道生成完毕: ${audioOutputPath}`);
 
     // Step 2: 使用 FFmpeg 进行底层音视频轨道合并 (Muxing)
@@ -50,45 +44,6 @@ export async function synthesizeShortsVideo(scriptText, rawVideoPath, outputFile
     console.error(`❌ [Muxer Error] 合成流水线崩溃:`, error.message);
     throw error;
   }
-}
-
-/**
- * 引擎 1：ElevenLabs 语音生成器
- */
-async function generateVoiceover(text, outputPath) {
-  const url = `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`;
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Accept': 'audio/mpeg',
-      'xi-api-key': ELEVENLABS_API_KEY,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      text: text,
-      model_id: "eleven_multilingual_v2", // 支持多语言，发音极其自然
-      voice_settings: {
-        stability: 0.5,       // 降低稳定性以增加情绪波动和“人味”
-        similarity_boost: 0.75,
-        style: 0.2
-      }
-    })
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`ElevenLabs API 拒绝访问: ${response.statusText} - ${errorText}`);
-  }
-
-  // 将音频流写入本地文件
-  const dest = fs.createWriteStream(outputPath);
-  response.body.pipe(dest);
-
-  return new Promise((resolve, reject) => {
-    dest.on('finish', resolve);
-    dest.on('error', reject);
-  });
 }
 
 /**

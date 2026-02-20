@@ -22,8 +22,7 @@ export const useYouTubeData = () => {
     });
 
     const [analyticsLogs, setAnalyticsLogs] = useState<string[]>([]);
-    const [extensionStatus, setExtensionStatus] = useState<string>('unknown');
-    const [isExtensionInvalidated, setIsExtensionInvalidated] = useState(false);
+    const [serverStatus, setServerStatus] = useState<'connected' | 'disconnected' | 'error' | 'unknown'>('unknown');
 
     // Derived State
     const [commentsQueueStatus, setCommentsQueueStatus] = useState({
@@ -51,6 +50,20 @@ export const useYouTubeData = () => {
     useEffect(() => {
         localStorage.setItem('youtubeNotifications', JSON.stringify(notifications));
     }, [notifications]);
+
+    // Actions
+    const checkServerStatus = async () => {
+        try {
+            const response = await fetch('/health');
+            if (response.ok) {
+                setServerStatus('connected');
+            } else {
+                setServerStatus('error');
+            }
+        } catch (e) {
+            setServerStatus('disconnected');
+        }
+    };
 
     // Listeners
     useEffect(() => {
@@ -83,59 +96,18 @@ export const useYouTubeData = () => {
                 setAnalyticsLogs(prev => [...prev.slice(-4), message.message]);
             }
 
-            if (message.type === 'EXTENSION_STATUS_RESULT' || message.type === 'EXTENSION_STATUS_RESPONSE') {
-                console.log(`🔌 [Hook] Extension Status Received (${message.type}):`, message.status, message.source || 'background');
-                setExtensionStatus(message.status === 'active' ? 'connected' : message.status);
-                setIsExtensionInvalidated(false);
-            }
-
-            if (message.type === 'EXTENSION_INVALIDATED') {
-                setIsExtensionInvalidated(true);
-            }
-
-            if (message.type === 'YOUTUBE_ANALYTICS_DIRECT_RESULT') {
-                console.log("📊 [Hook] Received Direct Analytics Result:", message.data?.category);
-                // The actual mapping of this data into a global store or shared state 
-                // might be needed if multiple components use it.
-                // For now, we can log it or bridge it to useAnalyticsData if they are used together.
-            }
+            // [V2.0 Master-Slave Inversion] Extension logic neutralized
         };
 
         window.addEventListener('message', handleMessage);
 
         // Initial Check
-        try {
-            if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
-                chrome.runtime.sendMessage({ action: 'checkStatus' }, (res) => {
-                    if (chrome.runtime.lastError) {
-                        window.postMessage({ type: 'CHECK_EXTENSION_STATUS' }, '*');
-                    }
-                });
-            } else {
-                window.postMessage({ type: 'CHECK_EXTENSION_STATUS' }, '*');
-            }
-        } catch {
-            window.postMessage({ type: 'CHECK_EXTENSION_STATUS' }, '*');
-        }
+        checkServerStatus();
 
-        // Periodic Check
+        // Periodic Check (Heartbeat)
         const interval = setInterval(() => {
-            try {
-                if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
-                    chrome.runtime.sendMessage({ action: 'checkStatus' }, (_response) => {
-                        if (chrome.runtime.lastError) {
-                            window.postMessage({ type: 'CHECK_EXTENSION_STATUS' }, '*');
-                        } else {
-                            setIsExtensionInvalidated(false);
-                        }
-                    });
-                } else {
-                    window.postMessage({ type: 'CHECK_EXTENSION_STATUS' }, '*');
-                }
-            } catch {
-                window.postMessage({ type: 'CHECK_EXTENSION_STATUS' }, '*');
-            }
-        }, 5000);
+            checkServerStatus();
+        }, 10000);
 
         return () => {
             window.removeEventListener('message', handleMessage);
@@ -143,80 +115,27 @@ export const useYouTubeData = () => {
         };
     }, []);
 
-    // Actions
-    const checkExtensionStatus = () => {
-        try {
-            if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
-                chrome.runtime.sendMessage({ action: 'checkStatus' }, (res) => {
-                    if (chrome.runtime.lastError) {
-                        window.postMessage({ type: 'CHECK_EXTENSION_STATUS' }, '*');
-                    }
-                });
-            } else {
-                window.postMessage({ type: 'CHECK_EXTENSION_STATUS' }, '*');
-            }
-        } catch {
-            window.postMessage({ type: 'CHECK_EXTENSION_STATUS' }, '*');
-        }
-    };
-
-    // Single Category Collection (Pass-through logic)
-    const collectSingleCategory = (category: 'overview' | 'content' | 'audience', timeRange: string) => {
-        // This logic involves opening windows and posting messages.
-        // It might be better adjacent to where it's called or in a util, 
-        // but placing it here centralizes "Data Collection" logic.
-
-        const tabMap: Record<string, string> = {
-            'overview': 'tab-overview',
-            'content': 'tab-content',
-            'audience': 'tab-build_audience'
-        };
-
+    // Single Category Collection (V6.0 Headless Transition)
+    const collectSingleCategory = async (category: 'overview' | 'content' | 'audience', timeRange: string) => {
         const intent = intentStream.propose('COLLECT_ANALYTICS', { category, timeRange }, 'user');
-        const causeId = effectLogger.logEffect(intent.id, `Triggering ${category} collection`);
+        const causeId = effectLogger.logEffect(intent.id, `Triggering autonomous ${category} collection mission`);
 
-        if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-            chrome.storage.local.set({ analyticsTimeRange: timeRange });
-            effectLogger.logEffect(causeId, 'Saved timeRange to chrome.storage');
-        }
+        try {
+            const response = await fetch('/api/analytics/scrape', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category, timeRange, intentId: intent.id })
+            });
 
-        const getTimeRangePath = (range: string): string => {
-            switch (range) {
-                case 'week': return 'period-week';
-                case 'default': return 'period-default';
-                case 'quarter': return 'period-quarter';
-                case 'year': return 'period-year';
-                case 'lifetime': return 'period-lifetime';
-                default: return 'period-default';
-            }
-        };
-
-        const pathSuffix = getTimeRangePath(timeRange);
-        const basePath = `https://studio.youtube.com/channel/mine/analytics/${tabMap[category]}`;
-        const url = `${basePath}/${pathSuffix}`;
-
-        const win = window.open(url, JSON.stringify({ timeRange: timeRange, singleCategory: category }));
-
-        const interval = setInterval(() => {
-            if (win && !win.closed) {
-                win.postMessage({
-                    type: 'REQUEST_YOUTUBE_ANALYTICS',
-                    payload: {
-                        action: 'scrape_analytics_direct',
-                        category: category,
-                        targetTimeRange: timeRange,
-                        intentId: intent.id // Pass intentId for downstream tracing
-                    }
-                }, '*');
-                effectLogger.logEffect(causeId, `Posted scrape request to tab for ${category}`);
+            if (response.ok) {
+                effectLogger.logEffect(causeId, `Headless scrape mission dispatched for ${category}`);
             } else {
-                clearInterval(interval);
+                throw new Error('Backend rejection');
             }
-        }, 2000);
-
-        setTimeout(() => {
-            clearInterval(interval);
-        }, 30000);
+        } catch (e) {
+            console.error(`❌ [Headless Scrape] Dispatch failed for ${category}:`, e);
+            effectLogger.logEffect(causeId, `Headless scrape mission FAILED to dispatch: ${e.message}`);
+        }
     };
 
     return {
@@ -224,7 +143,7 @@ export const useYouTubeData = () => {
         commentsData, setCommentsData,
         notifications, setNotifications,
         analyticsLogs, setAnalyticsLogs,
-        extensionStatus, isExtensionInvalidated, checkExtensionStatus,
+        serverStatus, checkServerStatus,
         commentsQueueStatus,
         collectSingleCategory
     };

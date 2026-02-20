@@ -11,12 +11,14 @@ export interface Intent {
     payload: any;
     origin: 'user' | 'agent' | 'system';
     status: 'proposed' | 'committed' | 'failed' | 'scraping' | 'mutating' | 'muxing' | 'uploading' | 'completed';
+    target_channel_id?: string | null; // V11.0 Matrix Expansion
     error?: string;
 }
 
 class IntentStream {
     private intents: Intent[] = [];
     private subscribers: ((intent: Intent) => void)[] = [];
+    private activeChannelId: string | null = null; // V11.0 Expansion
 
     /**
      * Propose a new intent to the system
@@ -28,7 +30,8 @@ class IntentStream {
             type,
             payload,
             origin,
-            status: 'proposed'
+            status: 'proposed',
+            target_channel_id: this.activeChannelId // V11.0 Auto-bind
         };
 
         this.intents.push(intent);
@@ -139,12 +142,29 @@ class IntentStream {
         }
     }
 
-    private syncToBackend(intent: Intent) {
-        // Use window.postMessage to relay through reactBridge to background -> backend
-        window.postMessage({
-            type: 'SYNC_INTENT_STATE',
-            payload: intent
-        }, '*');
+    /**
+     * Set the active channel context for all future intents
+     */
+    setActiveChannelId(channelId: string | null) {
+        this.activeChannelId = channelId;
+        console.log(`🚢 [IntentStream] Channel Context Locked: ${channelId || 'Global'}`);
+    }
+
+    getActiveChannelId(): string | null {
+        return this.activeChannelId;
+    }
+
+    private async syncToBackend(intent: Intent) {
+        // [V2.0 Master-Slave Inversion] Direct sync to industrial backend
+        try {
+            await fetch('http://localhost:51122/api/intents/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(intent)
+            });
+        } catch (err) {
+            console.warn("⚠️ [IntentStream] Offline sync failed (Backend may be cycling)");
+        }
     }
 }
 

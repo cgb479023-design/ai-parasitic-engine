@@ -28,51 +28,29 @@ export class YouTubeApiClient {
   // ----------------------------
 
   /**
-   * Fetch video details from YouTube API
+   * Fetch video details from YouTube API (V6.0 Quota Armor)
    */
   async getVideoDetails(videoId: string): Promise<any> {
-    const endpoint = `${YOUTUBE_API_BASE_URL}/videos`;
-    const params = new URLSearchParams({
-      part: 'snippet,statistics,contentDetails',
-      id: videoId,
-      key: this.apiKey
-    });
-
-    const response = await fetch(`${endpoint}?${params}`);
+    const response = await fetch(`/api/youtube/video-details?videoId=${videoId}`);
     if (!response.ok) {
-      throw new Error(`YouTube API error: ${response.status} ${response.statusText}`);
+      throw new Error(`Proxy error: ${response.status}`);
     }
-    const data = await response.json();
-    // ✅ Defensive check: Ensure data is not null or undefined
-    if (!data) {
-      console.error('Invalid data received from YouTube API:', data);
-      throw new Error('No data or invalid data received from YouTube API.');
-    }
-    return data;
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error || 'Backend failed to proxy YouTube data');
+    return result.data;
   }
 
   /**
-   * Fetch channel details from YouTube API
+   * Fetch channel details from YouTube API (V6.0 Quota Armor)
    */
   async getChannelDetails(channelId: string): Promise<any> {
-    const endpoint = `${YOUTUBE_API_BASE_URL}/channels`;
-    const params = new URLSearchParams({
-      part: 'snippet,statistics,contentDetails,brandingSettings',
-      id: channelId,
-      key: this.apiKey
-    });
-
-    const response = await fetch(`${endpoint}?${params}`);
+    const response = await fetch(`/api/youtube/channel-stats?channelId=${channelId}`);
     if (!response.ok) {
-      throw new Error(`YouTube API error: ${response.status} ${response.statusText}`);
+      throw new Error(`Proxy error: ${response.status}`);
     }
-    const data = await response.json();
-    // ✅ Defensive check: Ensure data is not null or undefined
-    if (!data) {
-      console.error('Invalid data received from YouTube API:', data);
-      throw new Error('No data or invalid data received from YouTube API.');
-    }
-    return data;
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error || 'Backend failed to proxy YouTube data');
+    return result.data;
   }
 
   /**
@@ -84,80 +62,42 @@ export class YouTubeApiClient {
   }
 
   /**
-   * Search for videos on YouTube
+   * Search for videos on YouTube (V6.0 Quota Armor)
    */
   async searchVideos(query: string, maxResults: number = 10): Promise<any> {
-    const endpoint = `${YOUTUBE_API_BASE_URL}/search`;
-    const params = new URLSearchParams({
-      part: 'snippet',
-      q: query,
-      maxResults: maxResults.toString(),
-      type: 'video',
-      key: this.apiKey
-    });
-
-    const response = await fetch(`${endpoint}?${params}`);
+    const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(query)}&maxResults=${maxResults}`);
     if (!response.ok) {
-      throw new Error(`YouTube API error: ${response.status} ${response.statusText}`);
+      throw new Error(`Proxy error: ${response.status}`);
     }
-    const data = await response.json();
-    // ✅ Defensive check: Ensure data is not null or undefined
-    if (!data) {
-      console.error('Invalid data received from YouTube API:', data);
-      throw new Error('No data or invalid data received from YouTube API.');
-    }
-    return data;
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error || 'Backend failed to proxy YouTube data');
+    return result.data;
   }
 
   /**
-   * Fetch video comments
+   * Fetch video comments (V6.0 Quota Armor)
    */
   async getVideoComments(videoId: string, maxResults: number = 20): Promise<any> {
-    const endpoint = `${YOUTUBE_API_BASE_URL}/commentThreads`;
-    const params = new URLSearchParams({
-      part: 'snippet,replies',
-      videoId: videoId,
-      maxResults: maxResults.toString(),
-      textFormat: 'plainText',
-      key: this.apiKey
-    });
-
-    const response = await fetch(`${endpoint}?${params}`);
+    const response = await fetch(`/api/youtube/comments?videoId=${videoId}&maxResults=${maxResults}`);
     if (!response.ok) {
-      throw new Error(`YouTube API error: ${response.status} ${response.statusText}`);
+      throw new Error(`Proxy error: ${response.status}`);
     }
-    const data = await response.json();
-    // ✅ Defensive check: Ensure data is not null or undefined
-    if (!data) {
-      console.error('Invalid data received from YouTube API:', data);
-      throw new Error('No data or invalid data received from YouTube API.');
-    }
-    return data;
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error || 'Backend failed to proxy YouTube data');
+    return result.data;
   }
 
   /**
-   * Fetch channel playlists
+   * Fetch channel playlists (V6.0 Quota Armor)
    */
   async getChannelPlaylists(channelId: string, maxResults: number = 20): Promise<any> {
-    const endpoint = `${YOUTUBE_API_BASE_URL}/playlists`;
-    const params = new URLSearchParams({
-      part: 'snippet,contentDetails',
-      channelId: channelId,
-      maxResults: maxResults.toString(),
-      key: this.apiKey
-    });
-
-    const response = await fetch(`${endpoint}?${params}`);
+    const response = await fetch(`/api/youtube/playlists?channelId=${channelId}&maxResults=${maxResults}`);
     if (!response.ok) {
-      throw new Error(`YouTube API error: ${response.status} ${response.statusText}`);
+      throw new Error(`Proxy error: ${response.status}`);
     }
-    const data = await response.json();
-    // ✅ Defensive check: Ensure data is not null or undefined
-    if (!data) {
-      console.error('Invalid data received from YouTube API:', data);
-      throw new Error('No data or invalid data received from YouTube API.');
-    }
-    return data;
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error || 'Backend failed to proxy YouTube data');
+    return result.data;
   }
 
   /**

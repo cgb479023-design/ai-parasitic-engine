@@ -274,51 +274,35 @@ export function triggerCrossPlatformDistribution(content: CrossPlatformOutput, r
     return rid;
 }
 
-export function checkExtensionStatus(timeoutMs: number = 1500): Promise<'OK' | 'INVALIDATED' | 'TIMEOUT'> {
-    return new Promise((resolve) => {
-        let settled = false;
-        const handler = (event: MessageEvent) => {
-            if (event.source !== window || !event.data) return;
-            if (event.data?.type !== 'EXTENSION_STATUS_RESULT') return;
-            cleanup(event.data?.status === 'OK' || event.data?.status === 'connected' ? 'OK' : 'INVALIDATED');
-        };
-        const cleanup = (result: 'OK' | 'INVALIDATED' | 'TIMEOUT') => {
-            if (settled) return;
-            settled = true;
-            window.removeEventListener('message', handler);
-            clearTimeout(timer);
-            resolve(result);
-        };
-        const timer = window.setTimeout(() => cleanup('TIMEOUT'), timeoutMs);
-        window.addEventListener('message', handler);
-        window.postMessage({ type: 'CHECK_EXTENSION_STATUS' }, '*');
-    });
+/**
+ * Sends cross-platform distribution request to the backend API.
+ */
+export async function triggerCrossPlatformDistributionAsync(
+    content: CrossPlatformOutput,
+    timeoutMs: number = 60000
+): Promise<any> {
+    console.log(`🌐 [CrossPlatform] Dispatching to backend:`, content);
+
+    try {
+        const response = await fetch('/api/distribute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(content)
+        });
+
+        if (!response.ok) throw new Error(`Backend error: ${response.statusText}`);
+
+        const result = await response.json();
+        return result;
+    } catch (e) {
+        console.error("❌ [CrossPlatform] Distribution dispatch failed:", e);
+        return { success: false, error: e.message };
+    }
 }
 
-export function triggerCrossPlatformDistributionAsync(
-    content: CrossPlatformOutput,
-    timeoutMs: number = 20000
-): Promise<any> {
-    return new Promise((resolve) => {
-        const requestId = `dist_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-        let settled = false;
-        const handler = (event: MessageEvent) => {
-            if (event.source !== window || !event.data) return;
-            if (event.data?.type !== 'CROSS_PLATFORM_DISTRIBUTE_RESULT') return;
-            if (event.data?.requestId !== requestId) return;
-            cleanup(event.data?.payload);
-        };
-        const cleanup = (result: any) => {
-            if (settled) return;
-            settled = true;
-            window.removeEventListener('message', handler);
-            clearTimeout(timer);
-            resolve(result);
-        };
-        const timer = window.setTimeout(() => cleanup({ success: false, error: 'TIMEOUT' }), timeoutMs);
-        window.addEventListener('message', handler);
-        window.postMessage({ type: 'CROSS_PLATFORM_DISTRIBUTE', payload: content, requestId }, '*');
-    });
+export async function checkExtensionStatus(): Promise<'OK' | 'INVALIDATED' | 'TIMEOUT'> {
+    // 🛡️ V5.0: Since we've moved to backend autonomous mode, we no longer depend on the extension.
+    return 'OK';
 }
 
 /**

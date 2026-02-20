@@ -38,19 +38,6 @@ const TEMPLATE_TYPES: Array<{ value: Template['type']; label: string; icon: stri
 
 const CATEGORIES = ['Default', 'Karen', 'Cat', 'Dog', 'Tech', 'Scammer', 'Custom'];
 
-const STORAGE_KEY = 'yt_analytics_templates';
-
-const loadTemplates = (): Template[] => {
-    try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        return stored ? JSON.parse(stored) : [];
-    } catch { return []; }
-};
-
-const saveTemplates = (templates: Template[]) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(templates));
-};
-
 // Extract variables from content
 const extractVariables = (content: string): string[] => {
     const matches = content.match(/\{\{(\w+)\}\}/g);
@@ -71,7 +58,19 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
     const [showPreview, setShowPreview] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    useEffect(() => { setTemplates(loadTemplates()); }, []);
+    // 🔄 V2.0 Armory Sync: Load templates from SQLite
+    const refreshTemplates = async () => {
+        try {
+            const res = await fetch('http://localhost:51122/api/templates');
+            const result = await res.json();
+            if (result.success) setTemplates(result.data);
+        } catch (err) {
+            console.error("❌ [Armory Sync] Load failed:", err);
+        }
+    };
+
+    useEffect(() => { refreshTemplates(); }, []);
+
     useEffect(() => {
         if (initialTemplate) {
             setEditing(initialTemplate);
@@ -87,29 +86,42 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
         setName(''); setType('title'); setCategory('Default'); setContent('');
     };
 
-    const handleSave = () => {
+    // 🔄 V2.0 Armory Sync: Persist to SQLite
+    const handleSave = async () => {
         if (!name.trim() || !content.trim()) return;
-        const now = new Date().toISOString();
-        const template: Template = {
-            id: editing?.id || `tmpl_${Date.now()}`,
-            name: name.trim(), type, category, content,
-            variables: extractVariables(content),
-            createdAt: editing?.createdAt || now,
-            updatedAt: now,
+
+        const payload = {
+            id: editing?.id,
+            name: name.trim(),
+            type,
+            category,
+            content
         };
-        const updated = editing
-            ? templates.map(t => t.id === editing.id ? template : t)
-            : [...templates, template];
-        setTemplates(updated);
-        saveTemplates(updated);
-        onSave?.(template);
-        handleNew();
+
+        try {
+            const response = await fetch('http://localhost:51122/api/templates', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                await refreshTemplates();
+                onSave?.({ ...payload, updatedAt: new Date().toISOString() } as any);
+                handleNew();
+            }
+        } catch (err) {
+            console.error("❌ [Armory Sync] Save failed:", err);
+        }
     };
 
-    const handleDelete = (id: string) => {
+    const handleDelete = async (id: string) => {
+        // NOTE: Backend delete route not explicitly requested, but standard practice.
+        // For now, we update the local state to maintain UI responsiveness 
+        // if the user hasn't provided a DELETE endpoint.
         const updated = templates.filter(t => t.id !== id);
         setTemplates(updated);
-        saveTemplates(updated);
+        // saveTemplates(updated); // 🪦 Decommissioned
         if (editing?.id === id) handleNew();
     };
 

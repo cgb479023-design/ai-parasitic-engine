@@ -34,6 +34,8 @@ import PipelineMatrix from './Aetheria/PipelineMatrix';
 import CTRMatrix from './Aetheria/CTRMatrix';
 import EvoMapTerminal from './Aetheria/EvoMapTerminal';
 import { useIntentStream } from '../hooks/useIntentStream';
+import { ChannelSelector } from './Sidebar/ChannelSelector';
+import { intentStream } from '../core/IntentStream';
 
 const CONSTANTS = {
     CATEGORIES: [
@@ -54,6 +56,7 @@ export const YouTubeAnalytics: React.FC<YouTubeAnalyticsProps> = ({ apiKey }) =>
     const [activeTab, setActiveTab] = useState<'dashboard' | 'content' | 'analytics' | 'ypp' | 'ignite' | 'dfl' | 'research' | 'quality' | 'crossplatform' | 'calendar' | 'templates'>('dashboard');
     const [showSettings, setShowSettings] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
+    const [activeChannelId, setActiveChannelId] = useState<string>('primary_channel'); // V11.0 Expansion
 
     // Panel Specific State
     const [activeMetric, setActiveMetric] = useState('views');
@@ -101,9 +104,8 @@ export const YouTubeAnalytics: React.FC<YouTubeAnalyticsProps> = ({ apiKey }) =>
         notifications,
         analyticsLogs,
         setAnalyticsLogs,
-        extensionStatus,
-        isExtensionInvalidated,
-        checkExtensionStatus,
+        serverStatus,
+        checkServerStatus,
         commentsQueueStatus,
         collectSingleCategory
     } = useYouTubeData();
@@ -210,6 +212,12 @@ export const YouTubeAnalytics: React.FC<YouTubeAnalyticsProps> = ({ apiKey }) =>
                     </div>
                 </div>
 
+                {/* V11.0 Matrix Expansion: Fleet Context Selector */}
+                <ChannelSelector onChannelChange={(id) => {
+                    setActiveChannelId(id);
+                    intentStream.setActiveChannelId(id);
+                }} />
+
                 <div className="space-y-1 flex-1">
                     {tabs.map(tab => (
                         <button
@@ -232,23 +240,18 @@ export const YouTubeAnalytics: React.FC<YouTubeAnalyticsProps> = ({ apiKey }) =>
                 {/* Status Footer */}
                 <div className="mt-4 pt-4 border-t border-white/10">
                     <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                        <span>Extension Status</span>
-                        <span className={`${extensionStatus === 'connected' ? 'text-green-500' : 'text-red-500 animate-pulse'}`}>
-                            {extensionStatus === 'connected' ? '● Connected' : '● Disconnected'}
+                        <span>Server Status</span>
+                        <span className={`${serverStatus === 'connected' ? 'text-green-500' : 'text-red-500 animate-pulse'}`}>
+                            {serverStatus === 'connected' ? '● Online' : serverStatus === 'disconnected' ? '● Offline' : '● Unknown'}
                         </span>
                     </div>
-                    {isExtensionInvalidated && (
-                        <div className="text-[10px] text-red-400 bg-red-900/20 p-2 rounded mb-2">
-                            Extension invalidated. Refresh page.
-                        </div>
-                    )}
                     <button
-                        onClick={() => checkExtensionStatus()}
+                        onClick={() => checkServerStatus()}
                         className="w-full py-1.5 bg-white/5 hover:bg-white/10 rounded text-xs text-slate-400 flex items-center justify-center gap-2"
                     >
-                        <RefreshCw size={12} /> Check Connection
+                        <RefreshCw size={12} /> Refresh Status
                     </button>
-                    <div className="text-[10px] text-slate-600 text-center mt-2">v3.5.0 • DFL Active</div>
+                    <div className="text-[10px] text-slate-600 text-center mt-2">v2.0.0 • Black Box Active</div>
                 </div>
             </div>
 

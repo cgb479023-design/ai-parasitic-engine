@@ -60,7 +60,10 @@
     "oauth:dev:full": "npm run oauth:dev & npm run dev",
     "test:perf:smoke": "k6 run performance-tests/backend/scenarios/smoke.test.ts",
     "test:perf:load": "k6 run --vus 50 --duration 5m performance-tests/backend/scenarios/video-generation.test.ts",
-    "test:perf:frontend": "playwright test --grep @perf"
+    "test:perf:frontend": "playwright test --grep @perf",
+    "drill:prep": "node -e \"const fs=require('fs'); ['server/temp_assets', 'server/platform.test.db'].forEach(p => fs.existsSync(p) && fs.rmSync(p, {recursive: true, force: true}))\"",
+    "drill:backend": "cross-env NODE_ENV=test node server/index.js",
+    "drill:e2e": "playwright test tests/e2e-pipeline.spec.js --headed"
   },
   "dependencies": {
     "@google/genai": "latest",
@@ -83,6 +86,7 @@
     "@vitest/coverage-v8": "^4.0.18",
     "@vitest/ui": "^4.0.17",
     "baseline-browser-mapping": "^2.9.18",
+    "cross-env": "^7.0.3",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.26",

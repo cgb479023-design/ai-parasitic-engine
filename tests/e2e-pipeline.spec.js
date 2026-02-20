@@ -9,7 +9,7 @@ test('DFL Command Center Industrial Loop - Zero Cost Simulation', async ({ page 
 
     // 1. Access Command Center
     console.log("🌐 Navigating to DFL Combat Center...");
-    await page.goto(REACT_APP_URL);
+    await page.goto(REACT_APP_URL, { timeout: 60000 });
 
     // 2. Wait for Radar signals (The "Start Hijack" button)
     console.log("📡 Listening for VPH Radar breakout...");

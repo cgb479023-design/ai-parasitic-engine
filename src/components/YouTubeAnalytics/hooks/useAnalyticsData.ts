@@ -165,22 +165,52 @@ export const useAnalyticsData = () => {
         return () => window.removeEventListener('message', messageListener);
     }, []);
 
-    // Queue Driver
+    // V6.0 MONITOR CLUSTER: Queue Driver & Polling
     useEffect(() => {
         if (collectionQueue.length > 0 && !currentCollectionCategory && isCollecting) {
             const nextCategory = collectionQueue[0];
             setCurrentCollectionCategory(nextCategory);
             setRetryCount(0);
-            setProgress(`Collecting ${nextCategory}...`);
-            window.postMessage({
-                type: 'REQUEST_YOUTUBE_ANALYTICS',
-                payload: { category: nextCategory }
-            }, '*');
+            setProgress(`Initiating headless scrape for ${nextCategory}...`);
+
+            // Trigger backend scrape mission
+            fetch('/api/analytics/scrape', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category: nextCategory, timeRange: timeRange })
+            }).catch(e => console.error("❌ [Polling] Failed to trigger scrape:", e));
+
         } else if (collectionQueue.length === 0 && isCollecting && !currentCollectionCategory && analyticsData) {
             setIsCollecting(false);
-            setProgress('🎉 Full Report Collected!');
+            setProgress('🎉 Full Report Synchronized!');
         }
-    }, [collectionQueue, currentCollectionCategory, isCollecting, analyticsData]);
+    }, [collectionQueue, currentCollectionCategory, isCollecting, analyticsData, timeRange]);
+
+    // V6.0 MONITOR CLUSTER: Results Polling Logic
+    useEffect(() => {
+        if (!isCollecting || !currentCollectionCategory) return;
+
+        const pollInterval = setInterval(async () => {
+            try {
+                const response = await fetch(`/api/analytics/data?category=${currentCollectionCategory}&timeRange=${timeRange}`);
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Dispatch success to existing message listener or handle directly
+                    window.postMessage({
+                        source: 'extension',
+                        type: 'YOUTUBE_ANALYTICS_RESULT',
+                        category: currentCollectionCategory,
+                        data: data
+                    }, '*');
+                }
+            } catch (e) {
+                console.warn(`⏳ [Polling] ${currentCollectionCategory} data not yet available in cache...`);
+            }
+        }, 5000);
+
+        return () => clearInterval(pollInterval);
+    }, [isCollecting, currentCollectionCategory, timeRange]);
 
     // Custom Query State
     const [customQuery, setCustomQuery] = useState('');
@@ -190,48 +220,46 @@ export const useAnalyticsData = () => {
     const handleRetry = () => {
         setRetryCount(prev => prev + 1);
         if (currentCollectionCategory) {
-            window.postMessage({
-                type: 'REQUEST_YOUTUBE_ANALYTICS',
-                payload: { category: currentCollectionCategory }
-            }, '*');
-        } else {
-            // If no specific category, maybe retry basic collection?
-            // specific logic depends on what failed.
+            fetch('/api/analytics/scrape', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category: currentCollectionCategory, timeRange: timeRange })
+            });
         }
     };
 
-    const handleCustomQuerySubmit = () => {
+    const handleCustomQuerySubmit = async () => {
         if (!customQuery.trim()) return;
 
-        // 💎 Pillar 4: Intent Sourcing
         const intent = intentStream.propose('CUSTOM_QUERY_SUBMIT', { query: customQuery, jsonMode: askAsJson }, 'user');
         effectLogger.logEffect(intent.id, `User submitted custom query: ${customQuery.substring(0, 50)}...`);
 
         setIsCustomCollecting(true);
         setCustomResult(null);
-        window.postMessage({
-            type: 'REQUEST_YOUTUBE_ANALYTICS',
-            payload: {
-                category: 'custom',
+
+        // Custom queries currently mapped to research/overview for headless
+        await fetch('/api/analytics/scrape', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                category: 'research',
                 question: customQuery,
                 jsonMode: askAsJson,
-                intentId: intent.id // Trace ID
-            }
-        }, '*');
+                intentId: intent.id
+            })
+        });
     };
 
     const handleManualCollect = () => {
-        const queue = ['ypp', 'overview', 'content', 'audience', 'traffic', 'engagement', 'comments'];
-
-        // 💎 Pillar 4: Intent Sourcing
+        const queue = ['overview', 'content', 'audience', 'traffic', 'engagement'];
         const intent = intentStream.propose('MANUAL_COLLECT_START', { queue }, 'user');
-        effectLogger.logEffect(intent.id, 'User initiated full manual collection sweep.');
+        effectLogger.logEffect(intent.id, 'User initiated autonomous collection sweep.');
 
         setIsCollecting(true);
         setCollectionQueue(queue);
         setCurrentCollectionCategory(null);
         setRetryCount(0);
-        setProgress('Starting full collection...');
+        setProgress('Dispatched autonomous sweep...');
     };
 
     return {

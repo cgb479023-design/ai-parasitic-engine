@@ -355,17 +355,31 @@ You are a viral content expert specializing in YouTube Shorts.`;
                                                 <span className="text-slate-300 truncate max-w-[180px]" title={p.title}>{p.title}</span>
                                                 {p.videoId && (
                                                     <button
-                                                        onClick={() => {
-                                                            if (!confirm(`🚀 Ignite engagement for "${p.title}"?\n\nThis will open the video and post a strategic comment.`)) return;
-                                                            window.postMessage({
-                                                                type: 'REQUEST_IGNITE',
-                                                                url: `https://www.youtube.com/watch?v=${p.videoId}`,
-                                                                text: `Wait for the end! 🤯 #${p.pattern || 'Viral'}`,
-                                                                pin: true
-                                                            }, '*');
+                                                        onClick={async () => {
+                                                            if (!confirm(`🚀 Ignite engagement for "${p.title}"?\n\nThis will trigger tactical engagement from the backend.`)) return;
+
+                                                            try {
+                                                                const response = await fetch('/api/ignite', {
+                                                                    method: 'POST',
+                                                                    headers: { 'Content-Type': 'application/json' },
+                                                                    body: JSON.stringify({
+                                                                        videoId: p.videoId,
+                                                                        title: p.title,
+                                                                        text: `Wait for the end! 🤯 #${p.pattern || 'Viral'}`
+                                                                    })
+                                                                });
+                                                                if (response.ok) {
+                                                                    addToast('success', 'Ignite command sent to backend装甲集群！');
+                                                                } else {
+                                                                    throw new Error('Backend rejection');
+                                                                }
+                                                            } catch (e) {
+                                                                console.error("❌ [Ignite] Failed:", e);
+                                                                addToast('error', 'Ignite command failed to dispatch.');
+                                                            }
                                                         }}
                                                         className="opacity-0 group-hover:opacity-100 bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 px-1.5 py-0.5 rounded text-[10px] transition-opacity"
-                                                        title="Auto-Comment to Boost Engagement"
+                                                        title="Auto-Comment to Boost Engagement (Server-Side)"
                                                     >
                                                         💬 Boost
                                                     </button>

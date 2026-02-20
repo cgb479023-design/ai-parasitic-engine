@@ -30,18 +30,18 @@ const MESSAGE_TYPES = {
     // State updates
     STATE_SET: 'SCHEDULER_STATE_SET',
     STATE_UPDATE: 'SCHEDULER_STATE_UPDATE',
-    
+
     // Scheduler events
     SCHEDULER_START: 'SCHEDULER_START',
     SCHEDULER_STOP: 'SCHEDULER_STOP',
     SCHEDULER_CHECK: 'SCHEDULER_CHECK',
-    
+
     // Publish events
     PUBLISH_TRIGGER: 'SCHEDULER_PUBLISH_TRIGGER',
     PUBLISH_PROGRESS: 'SCHEDULER_PUBLISH_PROGRESS',
     PUBLISH_SUCCESS: 'SCHEDULER_PUBLISH_SUCCESS',
     PUBLISH_ERROR: 'SCHEDULER_PUBLISH_ERROR',
-    
+
     // Plan updates
     PLAN_STATUS_UPDATE: 'SCHEDULER_PLAN_STATUS_UPDATE',
 } as const;
@@ -123,8 +123,8 @@ export class SchedulerService {
 
         // Notify via message bus
         if (messageBus) {
-            messageBus.broadcast(MESSAGE_TYPES.SCHEDULER_START, { 
-                checkFrequency: this.state.checkFrequency 
+            messageBus.broadcast(MESSAGE_TYPES.SCHEDULER_START, {
+                checkFrequency: this.state.checkFrequency
             });
         }
 
@@ -159,9 +159,9 @@ export class SchedulerService {
      */
     async checkScheduledVideos(): Promise<void> {
         const messageBus = getMessageBusService();
-        
+
         try {
-            const plan = this.getYppPlan();
+            const plan = await this.getYppPlan();
             if (!plan?.schedule || plan.schedule.length === 0) {
                 return;
             }
@@ -178,7 +178,7 @@ export class SchedulerService {
                     // 如果预约时间已到，触发发布
                     if (now >= publishTime) {
                         console.log(`🚀 [Scheduler] Triggering publish for ${item.id} (${item.title?.substring(0, 30)}...)`);
-                        
+
                         await this.triggerAutoPublish(item);
                         triggeredCount++;
                     }
@@ -226,10 +226,10 @@ export class SchedulerService {
             const videoData = await this.getVideoData(item.id);
             if (!videoData) {
                 console.error('❌ [Scheduler] Video data not found for:', item.id);
-                
+
                 // 更新状态为失败
                 this.updatePlanStatus(item.id, 'failed', 'Video data not found');
-                
+
                 if (messageBus) {
                     messageBus.publish(MESSAGE_TYPES.PUBLISH_ERROR, {
                         itemId: item.id,
@@ -237,7 +237,7 @@ export class SchedulerService {
                         timestamp: Date.now()
                     });
                 }
-                
+
                 return;
             }
 
@@ -292,10 +292,10 @@ export class SchedulerService {
                 if (result.response) {
                     const duration = Date.now() - startTime;
                     this.updateStats(true, duration);
-                    
+
                     // Update state
-                    this.updatePlanStatus(item.id, 'published', null);
-                    
+                    this.updatePlanStatus(item.id, 'published', undefined);
+
                     // Notify completion
                     if (messageBus) {
                         messageBus.broadcast(MESSAGE_TYPES.PUBLISH_PROGRESS, {
@@ -304,15 +304,15 @@ export class SchedulerService {
                             progress: 100
                         });
                     }
-                    
+
                     console.log(`✅ [Scheduler] Publish completed for ${item.id} in ${duration}ms`);
                 } else {
                     // Handle timeout or error
                     const duration = Date.now() - startTime;
                     this.updateStats(false, duration);
-                    
+
                     this.updatePlanStatus(item.id, 'failed', result.error?.message || 'Timeout');
-                    
+
                     if (messageBus) {
                         messageBus.broadcast(MESSAGE_TYPES.PUBLISH_PROGRESS, {
                             itemId: item.id,
@@ -321,18 +321,18 @@ export class SchedulerService {
                             error: result.error?.message || 'Timeout'
                         });
                     }
-                    
+
                     console.warn(`⏰ [Scheduler] Publish timeout/error for ${item.id}:`, result.error);
                 }
             } else {
                 // Fallback to window.postMessage if message bus not available
                 setTimeout(async () => {
                     const duration = Date.now() - startTime;
-                    
+
                     // Assume success after timeout (no way to confirm via window.postMessage)
                     this.updateStats(true, duration);
                     this.updatePlanStatus(item.id, 'published', null);
-                    
+
                     if (messageBus) {
                         messageBus.broadcast(MESSAGE_TYPES.PUBLISH_PROGRESS, {
                             itemId: item.id,
@@ -340,14 +340,14 @@ export class SchedulerService {
                             progress: 100
                         });
                     }
-                    
+
                     console.log(`✅ [Scheduler] Publish completed (fallback) for ${item.id} in ${duration}ms`);
                 }, 10000); // 10 second fallback
             }
 
         } catch (error) {
             console.error('❌ [Scheduler] Error triggering auto-publish:', error);
-            
+
             const errorTime = Date.now();
             this.state.triggeredVideos.set(item.id, {
                 triggeredAt: errorTime,
@@ -368,15 +368,19 @@ export class SchedulerService {
     }
 
     /**
-     * 从 localStorage 获取 YPP 计划
+     * 获取 YPP 计划 (从后端 API)
      */
-    private getYppPlan(): YppPlanType | null {
+    async getYppPlan(): Promise<YppPlanType | null> {
         try {
+            const response = await fetch('/api/schedules');
+            if (!response.ok) throw new Error('Failed to fetch schedules');
+            const data = await response.json();
+            return { schedule: data };
+        } catch (e) {
+            console.error('❌ [Scheduler] Failed to load YPP plan from API:', e);
+            // Fallback to local storage for offline/legacy support
             const saved = localStorage.getItem('yppPlan');
             return saved ? JSON.parse(saved) : null;
-        } catch (e) {
-            console.error('❌ [Scheduler] Failed to load YPP plan:', e);
-            return null;
         }
     }
 
@@ -394,7 +398,7 @@ export class SchedulerService {
             // 尝试从 chrome.storage 获取
             const result = await new Promise<any>((resolve) => {
                 if (typeof chrome !== 'undefined' && chrome.storage) {
-                    chrome.storage.local.get([`videoData_${itemId}`], (data) => {
+                    chrome.storage.local.get([`videoData_${itemId}`], (data: any) => {
                         resolve(data[`videoData_${itemId}`]);
                     });
                 } else {
@@ -410,24 +414,31 @@ export class SchedulerService {
     }
 
     /**
-     * 更新计划状态
+     * 更新计划状态 (同步到后端)
      */
-    private updatePlanStatus(itemId: string, status: string, error?: string): void {
+    private async updatePlanStatus(itemId: string, status: string, error?: string): Promise<void> {
         try {
-            const plan = this.getYppPlan();
+            const plan = await this.getYppPlan();
             if (!plan) return;
 
-            const newSchedule = plan.schedule.map(item => {
-                if (item.id === itemId) {
-                    return {
-                        ...item,
-                        status: status as any,
-                        error: error
-                    };
-                }
-                return item;
+            const item = plan.schedule.find(i => i.id === itemId);
+            if (!item) return;
+
+            const updatedItem = {
+                ...item,
+                status: status as any,
+                error: error
+            };
+
+            // 1. Sync to Backend
+            await fetch('/api/schedules', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedItem)
             });
 
+            // 2. Local Fallback (for UI responsiveness)
+            const newSchedule = plan.schedule.map(i => i.id === itemId ? updatedItem : i);
             const updatedPlan = { ...plan, schedule: newSchedule };
             localStorage.setItem('yppPlan', JSON.stringify(updatedPlan));
 
@@ -448,7 +459,7 @@ export class SchedulerService {
                 });
             }
 
-            console.log(`📝 [Scheduler] Updated ${itemId} status to ${status}`);
+            console.log(`📝 [Scheduler] Updated ${itemId} status to ${status} (Synced to Backend)`);
         } catch (e) {
             console.error('❌ [Scheduler] Failed to update plan status:', e);
         }

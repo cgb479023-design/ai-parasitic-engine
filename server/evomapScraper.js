@@ -1,10 +1,44 @@
 // h:\AI_Neural_Engine_Clean_v3.5\server\evomapScraper.js
 import crypto from 'crypto';
 import vm from 'vm';
+import fetch from 'node-fetch';
 
-// 配置信息 (建议放入 .env 文件)
 const EVOMAP_URL = 'https://evomap.ai/a2a/assets/search';
-const NODE_ID = process.env.EVOMAP_NODE_ID || `node_aineural_${crypto.randomBytes(4).toString('hex')}`;
+const NODE_ID = process.env.EVOMAP_NODE_ID || `node_empire_${crypto.randomBytes(4).toString('hex')}`;
+
+/**
+ * 📡 [EvoMap Protocol] Hello: 激活全球 Agent 合作网络节点
+ */
+export async function registerNode() {
+    const payload = {
+        protocol: "gep-a2a",
+        protocol_version: "1.0.0",
+        message_type: "hello",
+        message_id: `msg_${Date.now()}`,
+        sender_id: NODE_ID,
+        timestamp: new Date().toISOString(),
+        payload: {
+            capabilities: { video_synthesis: true, yt_automation: true },
+            env_fingerprint: { platform: process.platform, arch: process.arch }
+        }
+    };
+
+    try {
+        const res = await fetch('https://evomap.ai/a2a/hello', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error(`Registration failed with status ${res.status}`);
+        const data = await res.json();
+        console.log(`📡 [EvoMap] 节点已激活。唯一 ID: ${NODE_ID}`);
+        if (data.claim_url) {
+            console.log(`🔗 [EvoMap] 绑定 URL (用于 Hub 连接): ${data.claim_url}`);
+        }
+    } catch (e) {
+        console.warn(`⚠️ [EvoMap Registration Failed] 节点离线运行: ${e.message}`);
+    }
+}
 
 /**
  * 主入口：带自愈能力的 YouTube 信息抓取

@@ -1,7 +1,7 @@
-// h:\AI_Neural_Engine_Clean_v3.5\server\studioUploader.js
 import puppeteer from 'puppeteer';
 import fetch from 'node-fetch';
 import fs from 'fs';
+import db, { getChannel } from './db.js';
 
 // --- 初始默认 DOM 选择器字典 (随时可能失效) ---
 let YOUTUBE_SELECTORS = {
@@ -13,22 +13,47 @@ let YOUTUBE_SELECTORS = {
 };
 
 /**
+ * 🚀 V11.0: 频道隔离级防弹上传引擎 (Persona-Switching Uploader)
  * 带有 EvoMap 自愈能力的自动上传主引擎
- * @param {string} videoFilePath - 本地合成好的 .mp4 文件路径
- * @param {object} metadata - 视频元数据 (标题, 描述等)
- * @param {number} retryCount - 当前重试次数
  */
-export async function uploadToYouTubeWithHealing(videoFilePath, metadata, retryCount = 0) {
+export async function uploadToYouTubeWithHealing(videoFilePath, metadata, channelId = 'primary_channel', retryCount = 0) {
+    console.log(`\n🚀 [Fleet Command] 正在为舰队 [${channelId}] 启动独立隔离上传协议... (重试: ${retryCount})`);
+
+    // 1. 🗄️ 从 SQLite 提取舰队机密档案
+    const channel = getChannel(channelId);
+    if (!channel) {
+        throw new Error(`❌ 致命错误: 找不到频道 [${channelId}] 的档案，发射终止！`);
+    }
+
+    // 2. 🛡️ 启动硬核装甲沙盒
     const browser = await puppeteer.launch({
         headless: "new",
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-blink-features=AutomationControlled'
+        ]
     });
-    const page = await browser.newPage();
 
     try {
-        console.log(`\n📤 [Uploader] 开始执行上传任务，尝试次数: ${retryCount + 1}`);
-        // 🛡️ SECURITY NOTE: In a real production environment, you should inject cookies or use a persistent user data dir.
-        // For this implementation, we assume authentication is handled.
+        // 3. 🎭 创建绝对隔离的“无痕上下文”
+        const context = await browser.createBrowserContext();
+        const page = await context.newPage();
+
+        // 伪装 User-Agent
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+
+        // 4. 🍪 注入灵魂
+        if (channel.cookies) {
+            const cookies = JSON.parse(channel.cookies);
+            await page.setCookie(...cookies);
+            console.log(`🍪 [Persona Injected] 成功注入频道 [${channel.name}] 的身份令牌。`);
+        } else {
+            console.warn(`⚠️ [Warning] 频道 [${channel.name}] 缺乏 Cookie！`);
+            throw new Error("Missing authentication cookies");
+        }
+
+        console.log(`🎬 [Infiltrating] 正在潜入 Studio 后台...`);
         await page.goto('https://studio.youtube.com', { waitUntil: 'networkidle2', timeout: 60000 });
 
         // --- 核心上传 DOM 交互步骤 ---
@@ -48,7 +73,6 @@ export async function uploadToYouTubeWithHealing(videoFilePath, metadata, retryC
         // --- 填写元数据 ---
         console.log(`[Uploader] 正在填写元数据 (标题: ${metadata.title})...`);
         await page.waitForSelector(YOUTUBE_SELECTORS.titleInput, { timeout: 20000 });
-        // YouTube Studio Inputs are often complex, using type() is safer
         await page.type(YOUTUBE_SELECTORS.titleInput, metadata.title);
 
         // --- 点击下一步直至发布 ---
@@ -59,10 +83,15 @@ export async function uploadToYouTubeWithHealing(videoFilePath, metadata, retryC
             await new Promise(r => setTimeout(r, 2000));
         }
 
-        console.log(`[Uploader] ✅ 视频上传成功，进入 YouTube 后台处理队列！\n`);
-        await browser.close();
+        console.log(`✅ [Mission Success] 视频成功部署至频道: ${channel.name}`);
 
-        // 🧹 [Garbage Collection] 成片已销毁，释放磁盘空间
+        // 6. 💾 战后记忆更新 (极其关键！)
+        const freshCookies = await page.cookies();
+        db.prepare('UPDATE channels SET cookies = ? WHERE id = ?')
+            .run(JSON.stringify(freshCookies), channelId);
+        console.log(`🔄 [Session Refreshed] 频道 [${channel.name}] 的令牌已自动续期。`);
+
+        // 7. 🧹 物理残骸销毁
         if (fs.existsSync(videoFilePath)) {
             fs.unlinkSync(videoFilePath);
             console.log(`🧹 [Garbage Collection] Payload purged after success: ${videoFilePath}`);
@@ -71,8 +100,7 @@ export async function uploadToYouTubeWithHealing(videoFilePath, metadata, retryC
         return { success: true, finalUrl: page.url() };
 
     } catch (error) {
-        if (browser) await browser.close();
-        console.warn(`\n⚠️ [Uploader Error] DOM 交互失败: ${error.message}`);
+        console.warn(`\n⚠️ [Uploader Error] 任务执行失败: ${error.message}`);
 
         // 🚨 触发免疫防线：如果重试次数未达上限，向 EvoMap 呼救
         if (retryCount < 2) {
@@ -81,8 +109,9 @@ export async function uploadToYouTubeWithHealing(videoFilePath, metadata, retryC
 
             if (isHealed) {
                 console.log(`[Self-Healing] 补丁热更新完毕！准备发起第 ${retryCount + 2} 次重试...`);
-                // 递归调用重试上传
-                return await uploadToYouTubeWithHealing(videoFilePath, metadata, retryCount + 1);
+                // 在递归前必须关闭当前浏览器
+                await browser.close();
+                return await uploadToYouTubeWithHealing(videoFilePath, metadata, channelId, retryCount + 1);
             }
         }
 
@@ -92,20 +121,42 @@ export async function uploadToYouTubeWithHealing(videoFilePath, metadata, retryC
             console.log(`🧹 [Garbage Collection] Payload purged after terminal failure: ${videoFilePath}`);
         }
 
-        console.error(`❌ [Uploader Fatal] 补丁耗尽，自愈失败。请人工介入或等待社区发布新胶囊。`);
+        console.error(`❌ [Uploader Fatal] 自愈失败或重试耗尽。`);
         throw error;
+    } finally {
+        if (browser && browser.connected) {
+            await browser.close();
+        }
     }
 }
 
 /**
- * EvoMap 免疫防线：通过 REST API 搜索最新的 DOM 选择器胶囊
+ * EvoMap 免疫防线：通过 GEP-A2A Protocol 协议动态获取 DOM 补丁
  */
 async function fetchEvoMapSelectorPatch(errorMessage) {
     try {
-        // 使用 EvoMap 的 REST 搜索接口，精准匹配 'youtube', 'studio', 'upload' 标签
-        const searchUrl = `https://evomap.ai/a2a/assets/search?signals=youtube,studio,selector&status=promoted&type=Capsule&limit=1`;
+        console.log(`[EvoMap] Initiating GEP-A2A 'Fetch' protocol for: YouTube Selector Capsule`);
 
-        const response = await fetch(searchUrl, { timeout: 5000 });
+        const payload = {
+            protocol: "gep-a2a",
+            protocol_version: "1.0.0",
+            message_type: "fetch",
+            message_id: `msg_fetch_${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            payload: {
+                target_type: "Capsule",
+                signals: ["youtube", "studio", "selector"],
+                context: { error: errorMessage }
+            }
+        };
+
+        const response = await fetch('https://evomap.ai/a2a/fetch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            timeout: 5000
+        });
+
         if (!response.ok) return false;
 
         const data = await response.json();

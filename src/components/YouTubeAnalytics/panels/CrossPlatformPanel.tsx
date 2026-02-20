@@ -104,29 +104,31 @@ export const CrossPlatformPanel: React.FC<CrossPlatformPanelProps> = ({
         loadViralWeights();
     }, []);
 
-    const loadExternalAnalytics = () => {
+    const loadExternalAnalytics = async () => {
         setIsLoadingAnalytics(true);
-        window.postMessage({ type: 'GET_EXTERNAL_ANALYTICS' }, '*');
-        const handler = (event: MessageEvent) => {
-            if (event.data?.type === 'EXTERNAL_ANALYTICS_RESULT') {
-                setExternalAnalytics(event.data.data);
-                setIsLoadingAnalytics(false);
-                window.removeEventListener('message', handler);
+        try {
+            const response = await fetch('/api/external-analytics');
+            const result = await response.json();
+            if (result.success) {
+                setExternalAnalytics(result.data);
             }
-        };
-        window.addEventListener('message', handler);
-        setTimeout(() => setIsLoadingAnalytics(false), 5000);
+        } catch (e) {
+            console.error("❌ [CrossPlatform] Failed to load external analytics:", e);
+        } finally {
+            setIsLoadingAnalytics(false);
+        }
     };
 
-    const loadViralWeights = () => {
-        window.postMessage({ type: 'GET_VIRAL_WEIGHTS' }, '*');
-        const handler = (event: MessageEvent) => {
-            if (event.data?.type === 'VIRAL_WEIGHTS_RESULT') {
-                setViralWeights(event.data.weights);
-                window.removeEventListener('message', handler);
+    const loadViralWeights = async () => {
+        try {
+            const response = await fetch('/api/viral-weights');
+            const result = await response.json();
+            if (result.success) {
+                setViralWeights(result.weights);
             }
-        };
-        window.addEventListener('message', handler);
+        } catch (e) {
+            console.error("❌ [CrossPlatform] Failed to load viral weights:", e);
+        }
     };
 
     const fileToBase64 = (file: File): Promise<string> => {
@@ -226,9 +228,20 @@ export const CrossPlatformPanel: React.FC<CrossPlatformPanelProps> = ({
         setIsDistributing(false);
     };
 
-    const handleRefreshAnalytics = () => {
-        window.postMessage({ type: 'TRIGGER_EXTERNAL_ANALYTICS_SCRAPE', platform: 'all' }, '*');
-        setTimeout(loadExternalAnalytics, 3000);
+    const handleRefreshAnalytics = async () => {
+        setIsLoadingAnalytics(true);
+        try {
+            await fetch('/api/external-analytics/scrape', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ platform: 'all' })
+            });
+            // Poll for results or just reload after a delay
+            setTimeout(loadExternalAnalytics, 3000);
+        } catch (e) {
+            console.error("❌ [CrossPlatform] Failed to trigger scrape:", e);
+            setIsLoadingAnalytics(false);
+        }
     };
 
     const formatNumber = (num: number): string => {

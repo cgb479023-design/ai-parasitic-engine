@@ -10,10 +10,31 @@ import { contractManager } from '../../../core/ContractManager';
 
 export const useYPP = (analyticsData: any) => {
     // State
-    const [yppPlan, setYppPlan] = useState<YPPPlan | null>(() => {
-        const saved = localStorage.getItem('yppPlan');
-        return saved ? JSON.parse(saved) : null;
-    });
+    const [yppPlan, setYppPlan] = useState<YPPPlan | null>(null);
+
+    // Initial Fetch from Backend
+    useEffect(() => {
+        const fetchSchedules = async () => {
+            try {
+                const response = await fetch('/api/schedules');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.length > 0) {
+                        setYppPlan({ schedule: data } as any);
+                    } else {
+                        // Fallback to localStorage for cold start
+                        const saved = localStorage.getItem('yppPlan');
+                        if (saved) setYppPlan(JSON.parse(saved));
+                    }
+                }
+            } catch (e) {
+                console.error('❌ [useYPP] Initial fetch failed:', e);
+                const saved = localStorage.getItem('yppPlan');
+                if (saved) setYppPlan(JSON.parse(saved));
+            }
+        };
+        fetchSchedules();
+    }, []);
     const [executionQueue, setExecutionQueue] = useState<number[]>(() => {
         const saved = localStorage.getItem('executionQueue');
         return saved ? JSON.parse(saved) : [];
@@ -46,10 +67,31 @@ export const useYPP = (analyticsData: any) => {
 
     const yppPlanRef = useRef(yppPlan);
 
-    // Persistence
+    // Persistence - Master Sync to Backend
     useEffect(() => {
         yppPlanRef.current = yppPlan;
-        if (yppPlan) localStorage.setItem('yppPlan', JSON.stringify(yppPlan));
+        if (yppPlan) {
+            localStorage.setItem('yppPlan', JSON.stringify(yppPlan));
+
+            // Sync individual items to backend for industrial durability
+            if (yppPlan.schedule) {
+                yppPlan.schedule.forEach(async (item: any, idx: number) => {
+                    const backendItem = {
+                        ...item,
+                        id: item.id || `item_${idx}_${Date.now()}`
+                    };
+                    try {
+                        await fetch('/api/schedules', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(backendItem)
+                        });
+                    } catch (e) {
+                        console.error('❌ [useYPP] Sync failed for item:', item.id, e);
+                    }
+                });
+            }
+        }
     }, [yppPlan]);
 
     useEffect(() => {
